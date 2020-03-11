@@ -1,0 +1,22 @@
+{
+  "name": "team-organizer.core",
+  "version": "1.0.0",
+  "description": "GraphQL API",
+  "main": "index.js",
+  "author": "vikei",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "ts-node src",
+    "start:dev": "ts-node-dev src"
+  },
+  "dependencies": {
+    "@types/graphql": "^14.5.0",
+    "graphql": "^14.6.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^8.6.2",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "type-graphql": "^0.17.6",
+    "typescript": "^3.8.3"
+  }
+}
