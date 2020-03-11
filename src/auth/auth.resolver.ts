@@ -1,9 +1,8 @@
-import { createToken } from './inputs/lib/token.lib'
-import { AuthObjectType } from './object-types/auth.object-type'
 import { Arg, Mutation, Resolver } from 'type-graphql'
-import { UserObjectType } from './../users/object-types/user.object-type'
-import { RegisterInput } from './inputs'
 import { addUser } from '../db'
+import { RegisterInput } from './inputs'
+import { createToken } from './lib/token.lib'
+import { AuthObjectType } from './object-types/auth.object-type'
 
 @Resolver()
 export class AuthResolver {
