@@ -1,13 +1,15 @@
-import 'reflect-metadata'
-import { UsersResolver } from './users.resolver'
-import { buildSchema } from 'type-graphql'
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
+import 'reflect-metadata'
+import { buildSchema } from 'type-graphql'
+import { AuthResolver } from './auth'
+import { UsersResolver } from './users'
 
 async function init() {
   const server = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UsersResolver],
+      validate: false,
+      resolvers: [UsersResolver, AuthResolver],
     }),
   })
 
