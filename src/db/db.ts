@@ -28,3 +28,7 @@ export const addUser = (data: RegisterInput) => {
 
   return newUser
 }
+
+export const findUser = (email: string) => {
+  return getUsers().find((u) => u.email === email)
+}

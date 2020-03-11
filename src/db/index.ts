@@ -1,1 +1,1 @@
-export { addUser, getUsers } from './db'
+export { addUser, getUsers, findUser } from './db'
