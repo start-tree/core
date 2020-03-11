@@ -1,5 +1,5 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 
-const person: { name: string } = { name: "vikei" };
+const person: { name: string } = { name: 'vikei' }
 
-console.log(person);
+console.log(person)
