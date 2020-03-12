@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context } from '../app'
-import { User, UsersService } from './../users'
+import { User, UsersService } from '../users'
 import { AuthService } from './auth.service'
 import { Auth } from './auth.type'
 import { LoginInput, RegisterInput } from './inputs'

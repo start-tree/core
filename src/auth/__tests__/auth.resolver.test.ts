@@ -2,9 +2,9 @@ import { ApolloServer, gql } from 'apollo-server-express'
 import { createTestClient } from 'apollo-server-testing'
 import { Container } from 'typedi'
 import { createApp } from '../../app'
-import { closePg, connectPg, fakeUsers, syncPg } from './../../db'
-import { UsersService } from './../../users'
-import { AuthService } from './../auth.service'
+import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
+import { UsersService } from '../../users'
+import { AuthService } from '../auth.service'
 
 describe('AuthResolver', () => {
   let server: ApolloServer
@@ -105,7 +105,7 @@ describe('AuthResolver', () => {
   })
 
   test.skip('get auth user', async () => {
-    const { query } = createTestClient(Object.create(server))
+    const { query } = createTestClient(server)
 
     const [userData] = fakeUsers
 

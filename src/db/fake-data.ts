@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { times } from 'lodash'
-import { CreateUser } from './../users'
+import { CreateUser } from '../users'
 
 export const authUsers = [
   {
