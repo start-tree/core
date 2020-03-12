@@ -4,8 +4,9 @@ import express from 'express'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
 import { Container } from 'typedi'
-import { AuthResolver } from './auth'
-import { UsersResolver } from './users'
+import { AuthResolver } from '../auth'
+import { UsersResolver } from '../users'
+import { authChecker, getContext } from './lib'
 
 configEnv()
 
@@ -15,7 +16,9 @@ export async function createApp() {
       validate: false,
       resolvers: [UsersResolver, AuthResolver],
       container: Container,
+      authChecker,
     }),
+    context: getContext,
   })
 
   const app = express()

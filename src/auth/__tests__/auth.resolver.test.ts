@@ -1,20 +1,23 @@
 import { ApolloServer, gql } from 'apollo-server-express'
 import { createTestClient } from 'apollo-server-testing'
 import { Container } from 'typedi'
-import { createApp } from '../../create-app'
-import { closePg, connectPg, syncPg, fakeUsers } from './../../db'
-import { UsersService } from './../../users/users.service'
+import { createApp } from '../../app'
+import { closePg, connectPg, fakeUsers, syncPg } from './../../db'
+import { UsersService } from './../../users'
+import { AuthService } from './../auth.service'
 
 describe('AuthResolver', () => {
   let server: ApolloServer
 
   let usersService: UsersService
+  let authService: AuthService
 
   beforeAll(async () => {
     await connectPg()
     await syncPg()
 
     usersService = Container.get(UsersService)
+    authService = Container.get(AuthService)
   })
 
   afterAll(async () => {
@@ -92,6 +95,43 @@ describe('AuthResolver', () => {
     expect(result.data!.login).toHaveProperty('token')
 
     const user = await usersService.findUser({ email: userData.email })
+
+    expect(result.data!.login).toHaveProperty('user', {
+      id: user!.id.toString(),
+      name: user!.name,
+      email: user!.email,
+      passwordHash: expect.any(String),
+    })
+  })
+
+  test.skip('get auth user', async () => {
+    const { query } = createTestClient(Object.create(server))
+
+    const [userData] = fakeUsers
+
+    const user = await usersService.findUser({ email: userData.email })
+    const token = authService.createToken(user!.id)
+
+    // TODO: generate from typegraphql-code-generator
+    const meQuery = gql`
+      {
+        me {
+          id
+          name
+          email
+          passwordHash
+        }
+      }
+    `
+
+    const result = await query({
+      query: meQuery,
+    })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data).toBeDefined()
+    expect(result.data!.login).toBeDefined()
+    expect(result.data!.login).toHaveProperty('token')
 
     expect(result.data!.login).toHaveProperty('user', {
       id: user!.id.toString(),

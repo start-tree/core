@@ -1,9 +1,9 @@
-import { createApp } from './create-app'
+import { createApp } from './app'
 import { connectPg } from './db'
 
 async function init() {
   try {
-    await connectPg({ fakeDb: Boolean(process.env.FAKE_DB) })
+    await connectPg({ fakeDb: process.env.FAKE_DB && JSON.parse(process.env.FAKE_DB) })
     console.log('Successed connected to postgres')
   } catch (e) {
     console.error(e)

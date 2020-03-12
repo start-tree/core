@@ -1,15 +1,22 @@
-import { Arg, Mutation, Resolver } from 'type-graphql'
-import { UsersService } from './../users'
-import { AuthServie } from './auth.service'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Context } from '../app'
+import { User, UsersService } from './../users'
+import { AuthService } from './auth.service'
+import { Auth } from './auth.type'
 import { LoginInput, RegisterInput } from './inputs'
-import { AuthObjectType } from './auth.object-type'
 
 @Resolver()
 export class AuthResolver {
-  constructor(private usersService: UsersService, private authService: AuthServie) {}
+  constructor(private usersService: UsersService, private authService: AuthService) {}
 
-  @Mutation(() => AuthObjectType)
-  async register(@Arg('data') data: RegisterInput): Promise<AuthObjectType> {
+  @Query(() => User)
+  @Authorized()
+  me(@Ctx() ctx: Context): User {
+    return ctx.authUser!
+  }
+
+  @Mutation(() => Auth)
+  async register(@Arg('data') data: RegisterInput): Promise<Auth> {
     const user = await this.usersService.createUser(data)
 
     return {
@@ -18,8 +25,8 @@ export class AuthResolver {
     }
   }
 
-  @Mutation(() => AuthObjectType, { nullable: true })
-  async login(@Arg('data') data: LoginInput): Promise<AuthObjectType | null> {
+  @Mutation(() => Auth, { nullable: true })
+  async login(@Arg('data') data: LoginInput): Promise<Auth | null> {
     const user = await this.usersService.findUser({ email: data.email })
 
     if (!user) {

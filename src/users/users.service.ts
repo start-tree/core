@@ -2,17 +2,8 @@ import bcrypt from 'bcrypt'
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
+import { CreateUser, FindUser } from './interfaces'
 import { UserEntity } from './user.entity'
-
-export class CreateUser {
-  name: string
-  email: string
-  password: string
-}
-
-class FindUser {
-  email: string
-}
 
 @Service()
 export class UsersService {

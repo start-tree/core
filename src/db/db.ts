@@ -1,8 +1,8 @@
-import { UsersService } from './../users/users.service'
 import { Container } from 'typedi'
 import { createConnection, getConnection, useContainer } from 'typeorm'
 import { UserEntity } from '../users'
-import { fakeUsers, authUsers } from './fake-data'
+import { UsersService } from './../users/users.service'
+import { fakeUsers } from './fake-data'
 
 useContainer(Container)
 
