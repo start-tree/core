@@ -2,12 +2,12 @@ import { UsersService } from './../users/users.service'
 import { Container } from 'typedi'
 import { createConnection, getConnection, useContainer } from 'typeorm'
 import { UserEntity } from '../users'
-import { fakeUsers } from './fake-data'
+import { fakeUsers, authUsers } from './fake-data'
 
 useContainer(Container)
 
 export const connectPg = async (params: { fakeDb?: boolean } = {}) => {
-  const connection = createConnection({
+  const connection = await createConnection({
     type: 'postgres',
     url: process.env.PG_URL,
     synchronize: true,
@@ -15,6 +15,7 @@ export const connectPg = async (params: { fakeDb?: boolean } = {}) => {
   })
 
   if (params.fakeDb) {
+    await syncPg()
     await fakeDb()
   }
 
