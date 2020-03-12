@@ -1,3 +1,4 @@
+import { createConnection, getConnection } from 'typeorm'
 import { UserObjectType } from '../users'
 import { RegisterInput } from '../auth/inputs'
 
@@ -31,4 +32,20 @@ export const addUser = (data: RegisterInput) => {
 
 export const findUser = (email: string) => {
   return getUsers().find((u) => u.email === email)
+}
+
+export const connectPg = async () => {
+  return createConnection({
+    type: 'postgres',
+    url: process.env.PG_URL,
+    synchronize: true,
+  })
+}
+
+export const closePg = async () => {
+  return getConnection().close()
+}
+
+export const syncPg = async () => {
+  return getConnection().synchronize(true)
 }

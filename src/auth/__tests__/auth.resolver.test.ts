@@ -1,9 +1,13 @@
-import { gql } from 'apollo-server-express'
+import { gql, ApolloServer } from 'apollo-server-express'
 import { createTestClient } from 'apollo-server-testing'
 import { createApp } from '../../create-app'
 
 describe('AuthResolver', () => {
-  const { server } = createApp()
+  let server: ApolloServer
+
+  beforeEach(async () => {
+    ;({ server } = await createApp())
+  })
 
   test('register user', async () => {
     const { mutate } = createTestClient(server)

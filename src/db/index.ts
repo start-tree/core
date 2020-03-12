@@ -1,1 +1,1 @@
-export { addUser, getUsers, findUser } from './db'
+export { addUser, getUsers, findUser, connectPg, syncPg, closePg } from './db'

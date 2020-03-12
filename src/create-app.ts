@@ -1,13 +1,16 @@
 import { ApolloServer } from 'apollo-server-express'
+import { config as configEnv } from 'dotenv'
 import express from 'express'
 import 'reflect-metadata'
-import { buildSchemaSync } from 'type-graphql'
+import { buildSchema } from 'type-graphql'
 import { AuthResolver } from './auth'
 import { UsersResolver } from './users'
 
-export function createApp() {
+configEnv()
+
+export async function createApp() {
   const server = new ApolloServer({
-    schema: buildSchemaSync({
+    schema: await buildSchema({
       validate: false,
       resolvers: [UsersResolver, AuthResolver],
     }),
