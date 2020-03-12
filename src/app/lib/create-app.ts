@@ -4,9 +4,10 @@ import express from 'express'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
 import { Container } from 'typedi'
-import { AuthResolver } from '../auth'
-import { UsersResolver } from '../users'
-import { authChecker, getContext } from './lib'
+import { AuthResolver } from '../../auth'
+import { UsersResolver } from '../../users'
+import { getContext } from './get-context'
+import { authChecker } from './auth-checker'
 
 configEnv()
 
