@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { UserEntity } from './user.entity'
 
-class CreateUser {
+export class CreateUser {
   name: string
   email: string
   password: string

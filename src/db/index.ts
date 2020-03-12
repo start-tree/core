@@ -1,1 +1,2 @@
-export { connectPg, syncPg, closePg } from './db'
+export * from './db'
+export * from './fake-data'

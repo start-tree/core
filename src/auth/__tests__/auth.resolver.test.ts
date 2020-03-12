@@ -2,7 +2,7 @@ import { ApolloServer, gql } from 'apollo-server-express'
 import { createTestClient } from 'apollo-server-testing'
 import { Container } from 'typedi'
 import { createApp } from '../../create-app'
-import { closePg, connectPg, syncPg } from './../../db'
+import { closePg, connectPg, syncPg, fakeUsers } from './../../db'
 import { UsersService } from './../../users/users.service'
 
 describe('AuthResolver', () => {
@@ -23,17 +23,18 @@ describe('AuthResolver', () => {
   })
 
   beforeEach(async () => {
-    await syncPg()
+    await syncPg({ fakeDb: true })
     ;({ server } = await createApp())
   })
 
   test('register user', async () => {
     const { mutate } = createTestClient(server)
+    const [userData] = fakeUsers
 
     // TODO: generate from typegraphql-code-generator
     const registerMutation = gql`
       mutation {
-        register(data: { name: "test-name", email: "test@email.com", password: "pass" }) {
+        register(data: { name: "${userData.name}-register", email: "${userData.email}-register", password: "${userData.password}" }) {
           token
           user {
             id
@@ -55,8 +56,8 @@ describe('AuthResolver', () => {
     expect(result.data!.register).toHaveProperty('token')
     expect(result.data!.register).toHaveProperty('user', {
       id: expect.any(String),
-      name: 'test-name',
-      email: 'test@email.com',
+      name: `${userData.name}-register`,
+      email: `${userData.email}-register`,
       passwordHash: expect.any(String),
     })
   })
@@ -64,16 +65,12 @@ describe('AuthResolver', () => {
   test('login user', async () => {
     const { mutate } = createTestClient(server)
 
-    const user = await usersService.createUser({
-      name: 'test-name',
-      email: 'test@email',
-      password: 'test',
-    })
+    const [userData] = fakeUsers
 
     // TODO: generate from typegraphql-code-generator
     const loginMutation = gql`
       mutation {
-        login(data: { email: "${user.email}", password: "test" }) {
+        login(data: { email: "${userData.email}", password: "${userData.password}" }) {
           token
           user {
             id
@@ -93,10 +90,13 @@ describe('AuthResolver', () => {
     expect(result.data).toBeDefined()
     expect(result.data!.login).toBeDefined()
     expect(result.data!.login).toHaveProperty('token')
+
+    const user = await usersService.findUser({ email: userData.email })
+
     expect(result.data!.login).toHaveProperty('user', {
-      id: user.id.toString(),
-      name: user.name,
-      email: user.email,
+      id: user!.id.toString(),
+      name: user!.name,
+      email: user!.email,
       passwordHash: expect.any(String),
     })
   })

@@ -2,7 +2,7 @@ import { Arg, Mutation, Resolver } from 'type-graphql'
 import { UsersService } from './../users'
 import { AuthServie } from './auth.service'
 import { LoginInput, RegisterInput } from './inputs'
-import { AuthObjectType } from './object-types'
+import { AuthObjectType } from './auth.object-type'
 
 @Resolver()
 export class AuthResolver {
