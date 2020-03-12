@@ -1,7 +1,7 @@
 import { Container } from 'typedi'
 import { createConnection, getConnection, useContainer } from 'typeorm'
 import { UserEntity } from '../users'
-import { UsersService } from './../users/users.service'
+import { UsersService } from '../users/users.service'
 import { fakeUsers } from './fake-data'
 
 useContainer(Container)
