@@ -3,7 +3,7 @@ import { connectPg } from './db'
 
 async function init() {
   try {
-    await connectPg()
+    await connectPg({ fakeDb: Boolean(process.env.FAKE_DB) })
     console.log('Successed connected to postgres')
   } catch (e) {
     console.error(e)

@@ -3,6 +3,7 @@ import { config as configEnv } from 'dotenv'
 import express from 'express'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
+import { Container } from 'typedi'
 import { AuthResolver } from './auth'
 import { UsersResolver } from './users'
 
@@ -13,6 +14,7 @@ export async function createApp() {
     schema: await buildSchema({
       validate: false,
       resolvers: [UsersResolver, AuthResolver],
+      container: Container,
     }),
   })
 

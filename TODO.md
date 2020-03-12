@@ -7,12 +7,12 @@
   - connect +
   - disconnect +
   - sync +
-  - fake
+  - fake & mocks
   - reset
 - env +
-- user entity
-- fix test
-- implement user store
+- user entity +
+- fix test +
+- implement user service +
 - implelment create token
 
 ### Validation

@@ -1,32 +1,39 @@
 import { Arg, Mutation, Resolver } from 'type-graphql'
-import { addUser, findUser } from '../db'
-import { RegisterInput } from './inputs'
-import { createToken } from './lib/token.lib'
+import { UsersService } from './../users'
+import { AuthServie } from './auth.service'
+import { LoginInput, RegisterInput } from './inputs'
 import { AuthObjectType } from './object-types'
 
 @Resolver()
 export class AuthResolver {
+  constructor(private usersService: UsersService, private authService: AuthServie) {}
+
   @Mutation(() => AuthObjectType)
-  register(@Arg('data') data: RegisterInput): AuthObjectType {
-    const user = addUser(data)
+  async register(@Arg('data') data: RegisterInput): Promise<AuthObjectType> {
+    const user = await this.usersService.createUser(data)
 
     return {
-      token: createToken(user.id),
+      token: this.authService.createToken(user.id),
       user: user,
     }
   }
 
   @Mutation(() => AuthObjectType, { nullable: true })
-  login(@Arg('data') data: RegisterInput): AuthObjectType | null {
-    const user = findUser(data.email)
+  async login(@Arg('data') data: LoginInput): Promise<AuthObjectType | null> {
+    const user = await this.usersService.findUser({ email: data.email })
 
-    // TODO: handle user not found or password incorrect & test
     if (!user) {
       return null
     }
 
+    const passwordMatch = await this.usersService.comparePasswords(data.password, user.passwordHash)
+
+    if (!passwordMatch) {
+      return null
+    }
+
     return {
-      token: createToken(user.id),
+      token: this.authService.createToken(user.id),
       user: user,
     }
   }

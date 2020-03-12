@@ -1,1 +1,1 @@
-export { AuthObjectType } from './auth.object-type'
+export * from './auth.object-type'

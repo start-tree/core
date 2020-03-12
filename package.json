@@ -18,24 +18,30 @@
     }
   },
   "dependencies": {
-    "@types/graphql": "^14.5.0",
     "apollo-server-express": "^2.11.0",
+    "bcrypt": "^4.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^7.18.2",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.6.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "type-graphql": "^0.17.6",
+    "typedi": "^0.8.0",
     "typeorm": "^0.2.24",
+    "typeorm-typedi-extensions": "^0.2.3",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
+    "@types/jsonwebtoken": "^8.3.8",
     "apollo-server-testing": "^2.11.0",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
-    "ts-jest": "^25.2.1"
+    "ts-jest": "^25.2.1",
+    "@types/bcrypt": "^3.0.0",
+    "@types/graphql": "^14.5.0"
   }
 }

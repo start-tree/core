@@ -1,1 +1,2 @@
-export { RegisterInput } from './register.input'
+export * from './register.input'
+export * from './login.input'
