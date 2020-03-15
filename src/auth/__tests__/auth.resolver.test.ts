@@ -6,6 +6,7 @@ import { makeQuery } from '../../app/lib'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { AuthService } from '../auth.service'
+import { RegisterInput } from '../inputs'
 
 describe('AuthResolver', () => {
   let server: ApolloServer
@@ -36,8 +37,8 @@ describe('AuthResolver', () => {
     const [userData] = fakeUsers
 
     const registerMutation = `
-      mutation {
-        register(data: { name: "${userData.name}-register", email: "${userData.email}-register", password: "${userData.password}" }) {
+      mutation Register ($data: RegisterInput!){
+        register(data: $data) {
           token
           user {
             id
@@ -52,6 +53,13 @@ describe('AuthResolver', () => {
     const result = await makeQuery({
       app,
       query: registerMutation,
+      variables: {
+        data: {
+          name: `${userData.name}-register`,
+          email: `${userData.email}-register`,
+          password: userData.password,
+        },
+      },
     })
 
     expect(result.errors).toBeUndefined()
@@ -71,8 +79,8 @@ describe('AuthResolver', () => {
     const [userData] = fakeUsers
 
     const loginMutation = `
-      mutation {
-        login(data: { email: "${userData.email}", password: "${userData.password}" }) {
+      mutation Login ($data: LoginInput!){
+        login(data: $data) {
           token
           user {
             id
@@ -87,6 +95,12 @@ describe('AuthResolver', () => {
     const result = await makeQuery({
       app,
       query: loginMutation,
+      variables: {
+        data: {
+          email: userData.email,
+          password: userData.password,
+        },
+      },
     })
 
     expect(result.errors).toBeUndefined()

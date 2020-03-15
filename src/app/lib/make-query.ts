@@ -5,9 +5,10 @@ type MakeQuery = {
   app: Express
   query: string
   token?: string
+  variables?: object
 }
 
-export async function makeQuery({ token, query, app }: MakeQuery) {
+export async function makeQuery({ token, query, app, variables }: MakeQuery) {
   const headers: { Authorization?: string } = {}
 
   if (token) {
@@ -16,7 +17,7 @@ export async function makeQuery({ token, query, app }: MakeQuery) {
 
   const { body } = await supertest(app)
     .post('/graphql')
-    .send({ query })
+    .send({ query, variables })
     .set(headers)
 
   return body
