@@ -51,9 +51,10 @@
     "@types/jest": "^25.1.4",
     "@types/jsonwebtoken": "^8.3.8",
     "@types/lodash": "^4.14.149",
-    "apollo-server-testing": "^2.11.0",
+    "@types/supertest": "^2.0.8",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
+    "supertest": "^4.0.2",
     "ts-jest": "^25.2.1"
   }
 }
