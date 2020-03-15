@@ -10,11 +10,36 @@
     "start": "ts-node src",
     "start:dev": "ts-node-dev src",
     "format": "prettier \"src/**/*\" --write",
+    "lint": "eslint src/**/* --ext .ts",
     "test": "jest -i"
   },
   "jest": {
     "transform": {
       "^.+\\.ts?$": "ts-jest"
+    }
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "env": {
+      "node": true,
+      "es2020": true,
+      "jest": true
+    },
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": 0,
+      "@typescript-eslint/member-delimiter-style": 0,
+      "@typescript-eslint/no-non-null-assertion": 0
     }
   },
   "prettier": {
@@ -52,6 +77,9 @@
     "@types/jsonwebtoken": "^8.3.8",
     "@types/lodash": "^4.14.149",
     "@types/supertest": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "eslint": "^6.8.0",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",

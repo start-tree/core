@@ -1,5 +1,5 @@
+import { sign, verify } from 'jsonwebtoken'
 import { Service } from 'typedi'
-import { sign, verify, JsonWebTokenError } from 'jsonwebtoken'
 
 @Service()
 export class AuthService {
