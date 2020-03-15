@@ -1,4 +1,3 @@
-import { ApolloServer } from 'apollo-server-express'
 import { Express } from 'express'
 import { Container } from 'typedi'
 import { createApp } from '../../app'
@@ -6,10 +5,8 @@ import { makeQuery } from '../../app/lib'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { AuthService } from '../auth.service'
-import { RegisterInput } from '../inputs'
 
 describe('AuthResolver', () => {
-  let server: ApolloServer
   let app: Express
 
   let usersService: UsersService
