@@ -1,4 +1,5 @@
 import { Express } from 'express'
+import { omit } from 'lodash'
 import { Container } from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
@@ -40,21 +41,22 @@ describe('AuthResolver', () => {
             id
             name
             email
-            passwordHash
           }
         }
       }
     `
 
+    const registerData = {
+      name: `${userData.name}-register`,
+      email: `${userData.email}-register`,
+      password: userData.password,
+    }
+
     const result = await makeQuery({
       app,
       query: registerMutation,
       variables: {
-        data: {
-          name: `${userData.name}-register`,
-          email: `${userData.email}-register`,
-          password: userData.password,
-        },
+        data: registerData,
       },
     })
 
@@ -65,9 +67,7 @@ describe('AuthResolver', () => {
 
     expect(result.data.register).toHaveProperty('user', {
       id: expect.any(String),
-      name: `${userData.name}-register`,
-      email: `${userData.email}-register`,
-      passwordHash: expect.any(String),
+      ...omit(registerData, ['password']),
     })
   })
 
@@ -82,20 +82,21 @@ describe('AuthResolver', () => {
             id
             name
             email
-            passwordHash
           }
         }
       }
     `
 
+    const loginData = {
+      email: userData.email,
+      password: userData.password,
+    }
+
     const result = await makeQuery({
       app,
       query: loginMutation,
       variables: {
-        data: {
-          email: userData.email,
-          password: userData.password,
-        },
+        data: loginData,
       },
     })
 
@@ -107,9 +108,7 @@ describe('AuthResolver', () => {
 
     expect(result.data.login).toHaveProperty('user', {
       id: user!.id.toString(),
-      name: user!.name,
-      email: user!.email,
-      passwordHash: expect.any(String),
+      ...omit(user, ['id', 'passwordHash']),
     })
   })
 
@@ -125,7 +124,6 @@ describe('AuthResolver', () => {
           id
           name
           email
-          passwordHash
         }
       }
     `
@@ -137,9 +135,7 @@ describe('AuthResolver', () => {
 
     expect(result.data).toHaveProperty('me', {
       id: user!.id.toString(),
-      name: user!.name,
-      email: user!.email,
-      passwordHash: expect.any(String),
+      ...omit(user, ['id', 'passwordHash']),
     })
   })
 })

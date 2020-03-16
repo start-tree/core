@@ -9,20 +9,14 @@ export class ProjectsService {
   constructor(@InjectRepository(ProjectEntity) private projectsRepo: Repository<ProjectEntity>) {}
 
   async createProject(data: CreateProject) {
-    const { id } = await this.projectsRepo.save({
-      title: data.title,
-      description: data.description,
-      ownerId: data.ownerId,
-    })
-
+    const { id } = await this.projectsRepo.save(data)
     return this.findProject({ id })
   }
 
-  async updateProject(iId: number, data: UpdateProject) {
+  async updateProjectbyId(iId: number, data: UpdateProject) {
     const { id } = await this.projectsRepo.save({
       id: iId,
-      title: data.title,
-      description: data.description,
+      ...data,
     })
 
     return this.findProject({ id })
@@ -38,6 +32,7 @@ export class ProjectsService {
 
   async deleteProject({ id, ownerId }: { id: number; ownerId: number }) {
     const { affected } = await this.projectsRepo.delete({ id, ownerId })
+
     return Boolean(affected)
   }
 }

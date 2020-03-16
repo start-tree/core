@@ -35,7 +35,7 @@ export class ProjectsResolver {
       return null
     }
 
-    const updatedProject = await this.projectsService.updateProject(
+    const updatedProject = await this.projectsService.updateProjectbyId(
       parseInt(data.id, 10),
       omit(data, ['id'])
     )

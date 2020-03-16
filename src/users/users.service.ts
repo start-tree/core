@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { omit } from 'lodash'
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
@@ -11,8 +12,7 @@ export class UsersService {
 
   async createUser(data: CreateUser) {
     return this.userRepo.save({
-      name: data.name,
-      email: data.email,
+      ...omit(data, ['passwordHash']),
       passwordHash: await this.createPassword(data.password),
     })
   }

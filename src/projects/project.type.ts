@@ -3,7 +3,7 @@ import { User } from '../users'
 import { ProjectEntity } from './project.entity'
 
 @ObjectType()
-export class Project implements ProjectEntity {
+export class Project implements Omit<ProjectEntity, 'owner'> {
   @Field(() => ID)
   id: number
 

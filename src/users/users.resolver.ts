@@ -5,6 +5,6 @@ import { User } from './user.type'
 export class UsersResolver {
   @Query(() => [User])
   users(): User[] {
-    return [{ id: 1, email: 'vike', passwordHash: 'passs', name: 'bike' }]
+    return [{ id: 1, email: 'vike', name: 'bike' }]
   }
 }

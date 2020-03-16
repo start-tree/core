@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from 'type-graphql'
 import { UserEntity } from './user.entity'
 
 @ObjectType()
-export class User implements UserEntity {
+export class User implements Omit<UserEntity, 'passwordHash'> {
   @Field(() => ID)
   id: number
 
@@ -11,7 +11,4 @@ export class User implements UserEntity {
 
   @Field()
   email: string
-
-  @Field()
-  passwordHash: string
 }

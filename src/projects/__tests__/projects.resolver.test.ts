@@ -1,4 +1,5 @@
 import { Express } from 'express'
+import { omit } from 'lodash'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
@@ -68,13 +69,11 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
-      title: projectData.title,
-      description: projectData.description,
       ownerId: user!.id,
+      ...projectData,
       owner: {
         id: user!.id.toString(),
-        name: user!.name,
-        email: user!.email,
+        ...omit(user, ['id', 'passwordHash']),
       },
     })
   })
@@ -110,14 +109,11 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.project).toEqual({
-      id: '1',
-      title: project!.title,
-      description: project!.description,
-      ownerId: project!.ownerId,
+      id: project!.id.toString(),
+      ...omit(project, ['id', 'owner']),
       owner: {
         id: project!.owner!.id.toString(),
-        name: project!.owner!.name,
-        email: project!.owner!.email,
+        ...omit(project!.owner, ['id', 'passwordHash']),
       },
     })
   })
@@ -169,13 +165,11 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.updateProject).toEqual({
       id: project!.id.toString(),
-      title: newProjectData.title,
-      description: newProjectData.description,
+      ...omit(newProjectData, ['id', 'owner', 'ownerId']),
       ownerId: user!.id,
       owner: {
         id: user!.id.toString(),
-        name: user!.name,
-        email: user!.email,
+        ...omit(user, ['id', 'passwordHash']),
       },
     })
   })
