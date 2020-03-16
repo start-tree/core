@@ -1,6 +1,6 @@
 import Container from 'typedi'
 import { createConnection, useContainer } from 'typeorm'
-import { ProjectEntity } from '../../projects/project.entity'
+import { ProjectEntity } from '../../projects'
 import { UserEntity } from '../../users'
 import { fakeDb } from './fake-db'
 import { syncPg } from './sync-pg'

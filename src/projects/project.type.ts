@@ -1,9 +1,10 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, ID, ObjectType } from 'type-graphql'
+import { User } from '../users'
 import { ProjectEntity } from './project.entity'
 
 @ObjectType()
 export class Project implements ProjectEntity {
-  @Field()
+  @Field(() => ID)
   id: number
 
   @Field()
@@ -11,4 +12,10 @@ export class Project implements ProjectEntity {
 
   @Field()
   description: string
+
+  @Field()
+  ownerId: number
+
+  @Field(() => User)
+  owner: User
 }

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import { UserEntity } from '../users'
 
 @Entity()
 export class ProjectEntity {
@@ -10,4 +11,10 @@ export class ProjectEntity {
 
   @Column()
   description: string
+
+  @Column()
+  ownerId: number
+
+  @ManyToOne(() => UserEntity)
+  owner: UserEntity
 }

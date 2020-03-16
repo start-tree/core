@@ -1,7 +1,6 @@
 import { Express } from 'express'
 import { Container } from 'typedi'
-import { createApp } from '../../app'
-import { makeQuery } from '../../app/lib'
+import { createApp, makeQuery } from '../../app'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { AuthService } from '../auth.service'
@@ -62,9 +61,9 @@ describe('AuthResolver', () => {
     expect(result.errors).toBeUndefined()
     expect(result.data).toBeDefined()
 
-    expect(result.data!.register).toHaveProperty('token')
+    expect(result.data.register).toHaveProperty('token')
 
-    expect(result.data!.register).toHaveProperty('user', {
+    expect(result.data.register).toHaveProperty('user', {
       id: expect.any(String),
       name: `${userData.name}-register`,
       email: `${userData.email}-register`,

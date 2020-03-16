@@ -7,7 +7,7 @@ import { UserEntity } from './user.entity'
 
 @Service()
 export class UsersService {
-  constructor(@InjectRepository(UserEntity) readonly userRepo: Repository<UserEntity>) {}
+  constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) {}
 
   async createUser(data: CreateUser) {
     return this.userRepo.save({
