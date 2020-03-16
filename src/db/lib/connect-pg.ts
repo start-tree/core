@@ -1,7 +1,6 @@
 import Container from 'typedi'
 import { createConnection, useContainer } from 'typeorm'
-import { ProjectEntity } from '../../projects'
-import { UserEntity } from '../../users'
+import { dbEntities } from '../db.entities'
 import { fakeDb } from './fake-db'
 import { syncPg } from './sync-pg'
 
@@ -12,7 +11,7 @@ export const connectPg = async (params: { fakeDb?: boolean } = {}) => {
     type: 'postgres',
     url: process.env.PG_URL,
     synchronize: true,
-    entities: [UserEntity, ProjectEntity],
+    entities: dbEntities,
   })
 
   if (params.fakeDb) {

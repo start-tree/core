@@ -16,6 +16,7 @@ export class ProjectsResolver {
     @Arg('data') data: CreateProjectInput
   ): Promise<Project> {
     const project = await this.projectsService.createProject({ ...data, ownerId: ctx.authUser!.id })
+
     return project!
   }
 
@@ -25,11 +26,11 @@ export class ProjectsResolver {
     @Ctx() ctx: Context,
     @Arg('data') data: UpdateProjectInput
   ): Promise<Project> {
-    // TODO: check owner
     const project = await this.projectsService.updateProject(parseInt(data.id, 10), {
       ...omit(data, ['id']),
       ownerId: ctx.authUser!.id,
     })
+
     return project!
   }
 

@@ -2,7 +2,7 @@ import { Express } from 'express'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
-import { closePg, connectPg, fakeProjects, fakeUsers, syncPg, createFakeProjects } from '../../db'
+import { closePg, connectPg, fakeProjects, fakeUsers, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { ProjectsService } from './../projects.service'
 
