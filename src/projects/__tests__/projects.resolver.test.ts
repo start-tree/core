@@ -212,4 +212,32 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.deleteProject).toEqual(true)
   })
+
+  test('get projects', async () => {
+    const getProjectsQuery = `
+     {
+       projects {
+        id
+        title
+        description
+        ownerId
+        owner {
+          id
+          name
+          email
+        }
+       }
+     }
+    `
+
+    const result = await makeQuery({
+      app,
+      query: getProjectsQuery,
+    })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data).toBeDefined()
+
+    expect(result.data.projects).toHaveLength(fakeProjects.length)
+  })
 })

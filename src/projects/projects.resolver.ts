@@ -43,4 +43,9 @@ export class ProjectsResolver {
   async project(@Arg('id') id: string): Promise<Project | undefined> {
     return this.projectsService.findProject({ id: parseInt(id, 10) })
   }
+
+  @Query(() => [Project])
+  async projects(): Promise<Project[]> {
+    return this.projectsService.findProjects()
+  }
 }
