@@ -20,18 +20,27 @@ export class ProjectsResolver {
     return project!
   }
 
-  @Mutation(() => Project)
+  @Mutation(() => Project, { nullable: true })
   @Authorized()
   async updateProject(
     @Ctx() ctx: Context,
     @Arg('data') data: UpdateProjectInput
-  ): Promise<Project> {
-    const project = await this.projectsService.updateProject(parseInt(data.id, 10), {
-      ...omit(data, ['id']),
+  ): Promise<Project | null> {
+    const project = await this.projectsService.findProject({
+      id: parseInt(data.id, 10),
       ownerId: ctx.authUser!.id,
     })
 
-    return project!
+    if (!project) {
+      return null
+    }
+
+    const updatedProject = await this.projectsService.updateProject(
+      parseInt(data.id, 10),
+      omit(data, ['id'])
+    )
+
+    return updatedProject!
   }
 
   @Mutation(() => Boolean)

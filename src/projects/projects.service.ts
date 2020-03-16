@@ -23,7 +23,6 @@ export class ProjectsService {
       id: iId,
       title: data.title,
       description: data.description,
-      ownerId: data.ownerId,
     })
 
     return this.findProject({ id })
