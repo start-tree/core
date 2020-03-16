@@ -25,12 +25,18 @@ export class ProjectsResolver {
     @Ctx() ctx: Context,
     @Arg('data') data: UpdateProjectInput
   ): Promise<Project> {
-    // TODO: check ctx.user.id === project.ownerId
+    // TODO: check owner
     const project = await this.projectsService.updateProject(parseInt(data.id, 10), {
       ...omit(data, ['id']),
       ownerId: ctx.authUser!.id,
     })
     return project!
+  }
+
+  @Mutation(() => Boolean)
+  @Authorized()
+  async deleteProject(@Ctx() ctx: Context, @Arg('id') id: string): Promise<boolean> {
+    return this.projectsService.deleteProject({ id: parseInt(id, 10), ownerId: ctx.authUser!.id })
   }
 
   @Query(() => Project, { nullable: true })

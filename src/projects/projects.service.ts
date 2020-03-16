@@ -32,4 +32,9 @@ export class ProjectsService {
   async findProject(where: FindProject) {
     return this.projectsRepo.findOne(where, { relations: ['owner'] })
   }
+
+  async deleteProject({ id, ownerId }: { id: number; ownerId: number }) {
+    const { affected } = await this.projectsRepo.delete({ id, ownerId })
+    return Boolean(affected)
+  }
 }

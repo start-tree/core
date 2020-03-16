@@ -179,4 +179,37 @@ describe('ProjectsResolver', () => {
       },
     })
   })
+
+  test('delete project', async () => {
+    const deleteProjectMutation = `
+      mutation deleteProject($id: String!) {
+        deleteProject(id: $id)
+      }
+    `
+
+    const [userData] = fakeUsers
+    const user = await usersService.findUser({ email: userData.email })
+
+    const [projectData] = fakeProjects
+    const project = await projectsService.createProject({
+      title: `${projectData.title}-create`,
+      description: `${projectData.description}-create`,
+      ownerId: user!.id,
+    })
+
+    const token = authService.createToken(user!.id)
+    const result = await makeQuery({
+      app,
+      token,
+      query: deleteProjectMutation,
+      variables: {
+        id: project!.id.toString(),
+      },
+    })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data).toBeDefined()
+
+    expect(result.data.deleteProject).toEqual(true)
+  })
 })
