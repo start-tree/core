@@ -1,7 +1,7 @@
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CreateProject, FindProject } from './interfaces'
+import { CreateProject, FindProject, UpdateProject } from './interfaces'
 import { ProjectEntity } from './project.entity'
 
 @Service()
@@ -10,6 +10,17 @@ export class ProjectsService {
 
   async createProject(data: CreateProject) {
     const { id } = await this.projectsRepo.save({
+      title: data.title,
+      description: data.description,
+      ownerId: data.ownerId,
+    })
+
+    return this.findProject({ id })
+  }
+
+  async updateProject(iId: number, data: UpdateProject) {
+    const { id } = await this.projectsRepo.save({
+      id: iId,
       title: data.title,
       description: data.description,
       ownerId: data.ownerId,
