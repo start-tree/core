@@ -1,9 +1,9 @@
 import { Express } from 'express'
-import { omit } from 'lodash'
+import { omit, merge } from 'lodash'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
-import { closePg, connectPg, fakeProjects, fakeUsers, syncPg } from '../../db'
+import { closePg, connectPg, fakeProjects, fakeUsers, syncPg, fakeVacantions } from '../../db'
 import { UsersService } from '../../users'
 import { ProjectsService } from './../projects.service'
 
@@ -33,7 +33,7 @@ describe('ProjectsResolver', () => {
     ;({ app } = await createApp())
   })
 
-  test('create project', async () => {
+  test.only('create project', async () => {
     const createProjectMutation = `
       mutation CreateProject($data: CreateProjectInput!) {
         createProject(data: $data) {
@@ -46,6 +46,12 @@ describe('ProjectsResolver', () => {
             name
             email
           }
+          vacantions {
+            id
+            title
+            description
+            projectId
+          }
         }
       }
     `
@@ -53,6 +59,7 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findUser({ email: userData.email })
 
     const [projectData] = fakeProjects
+    const [vacantionData1, vacantionData2] = fakeVacantions
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -60,9 +67,11 @@ describe('ProjectsResolver', () => {
       token,
       query: createProjectMutation,
       variables: {
-        data: projectData,
+        data: merge(projectData, { vacantions: [vacantionData1, vacantionData2] }),
       },
     })
+
+    console.log(result.data.createProject)
 
     expect(result.errors).toBeUndefined()
     expect(result.data).toBeDefined()
@@ -70,11 +79,23 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
       ownerId: user!.id,
-      ...projectData,
+      ...omit(projectData, 'vacantions'),
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
       },
+      vacantions: expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          projectId: expect.any(Number),
+          ...vacantionData1,
+        }),
+        expect.objectContaining({
+          id: expect.any(String),
+          projectId: expect.any(Number),
+          ...vacantionData2,
+        }),
+      ]),
     })
   })
 
