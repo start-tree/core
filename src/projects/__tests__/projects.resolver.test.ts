@@ -1,12 +1,12 @@
 import { Express } from 'express'
-import { omit, merge } from 'lodash'
+import { merge, omit } from 'lodash'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
-import { closePg, connectPg, fakeProjects, fakeUsers, syncPg, fakeVacantions } from '../../db'
+import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
+import { UpdateVacantion } from '../../vacantions'
 import { ProjectsService } from './../projects.service'
-import { UpdateVacantion, VacantionsService } from '../../vacantions'
 
 describe('ProjectsResolver', () => {
   let app: Express
