@@ -6,7 +6,7 @@ import { AuthService } from '../../auth'
 import { closePg, connectPg, fakeProjects, fakeUsers, syncPg, fakeVacantions } from '../../db'
 import { UsersService } from '../../users'
 import { ProjectsService } from './../projects.service'
-import { UpdateVacantion } from '../../vacantions'
+import { UpdateVacantion, VacantionsService } from '../../vacantions'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -233,7 +233,9 @@ describe('ProjectsResolver', () => {
   test('delete project', async () => {
     const deleteProjectMutation = `
       mutation deleteProject($id: String!) {
-        deleteProject(id: $id)
+        deleteProject(id: $id) {
+          affected
+        }
       }
     `
 
@@ -260,7 +262,7 @@ describe('ProjectsResolver', () => {
     expect(result.errors).toBeUndefined()
     expect(result.data).toBeDefined()
 
-    expect(result.data.deleteProject).toEqual(true)
+    expect(result.data.deleteProject).toEqual({ affected: 1 })
   })
 
   test('get projects', async () => {

@@ -21,7 +21,8 @@ export class ProjectEntity {
 
   @OneToMany(
     () => VacantionEntity,
-    (v) => v.project
+    (v) => v.project,
+    { onDelete: 'CASCADE' }
   )
   vacantions: VacantionEntity[]
 }
