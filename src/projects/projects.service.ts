@@ -1,6 +1,6 @@
 import { omit } from 'lodash'
 import { Service } from 'typedi'
-import { Repository } from 'typeorm'
+import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
 import { CreateProject, FindProject, UpdateProject } from './interfaces'
@@ -27,11 +27,27 @@ export class ProjectsService {
     return this.findProject({ id })
   }
 
-  async updateProjectbyId(iId: number, data: UpdateProject) {
+  async updateProject(data: UpdateProject) {
     const { id } = await this.projectsRepo.save({
-      id: iId,
-      ...data,
+      ...omit(data, ['vacantions']),
     })
+
+    const { vacantions } = data
+    // find removed vacantions -> delete from db
+    const existedVacantions = await this.vacantionsService.findVacantions({ projectId: id })
+    const vacantionsIdsToDelete = existedVacantions
+      .filter((ev) => !vacantions.some((v) => v.id === ev.id))
+      .map((v) => v.id)
+    await this.vacantionsService.deleteVacantions({ ids: vacantionsIdsToDelete })
+    // find updated vacantions -> update in db
+    const vacantionsToUpdate = vacantions.filter((v) => v.id)
+    await Promise.all(vacantionsToUpdate.map((v) => this.vacantionsService.updateVacantion(v)))
+
+    // find new vacantions -> create in db
+    const vacantionsToCreate = vacantions.filter((v) => !v.id)
+    await Promise.all(
+      vacantionsToCreate.map((v) => this.vacantionsService.createVacantion({ ...v, projectId: id }))
+    )
 
     return this.findProject({ id })
   }
@@ -44,8 +60,18 @@ export class ProjectsService {
     return this.projectsRepo.find({ relations: ['owner', 'vacantions'] })
   }
 
-  async deleteProject({ id, ownerId }: { id: number; ownerId: number }) {
-    const { affected } = await this.projectsRepo.delete({ id, ownerId })
+  async deleteProject({ ids, ownerId }: { ids?: number[]; ownerId?: number }) {
+    const where: FindConditions<ProjectEntity> = {}
+
+    if (ids) {
+      where.id = In(ids)
+    }
+
+    if (ownerId) {
+      where.ownerId = ownerId
+    }
+
+    const { affected } = await this.projectsRepo.delete(where)
 
     return Boolean(affected)
   }

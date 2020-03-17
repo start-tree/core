@@ -1,9 +1,9 @@
 import { omit } from 'lodash'
-import { Arg, Authorized, Mutation, Query, Resolver, Ctx } from 'type-graphql'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Context } from '../app'
 import { CreateProjectInput, UpdateProjectInput } from './inputs'
 import { Project } from './project.type'
 import { ProjectsService } from './projects.service'
-import { Context } from '../app'
 
 @Resolver()
 export class ProjectsResolver {
@@ -35,10 +35,11 @@ export class ProjectsResolver {
       return null
     }
 
-    const updatedProject = await this.projectsService.updateProjectbyId(
-      parseInt(data.id, 10),
-      omit(data, ['id'])
-    )
+    const updatedProject = await this.projectsService.updateProject({
+      id: parseInt(data.id, 10),
+      ...omit(data, ['id', 'vacantions']),
+      vacantions: data.vacantions.map((v) => ({ ...v, id: v.id ? parseInt(v.id, 10) : undefined })),
+    })
 
     return updatedProject!
   }
@@ -46,7 +47,10 @@ export class ProjectsResolver {
   @Mutation(() => Boolean)
   @Authorized()
   async deleteProject(@Ctx() ctx: Context, @Arg('id') id: string): Promise<boolean> {
-    return this.projectsService.deleteProject({ id: parseInt(id, 10), ownerId: ctx.authUser!.id })
+    return this.projectsService.deleteProject({
+      ids: [parseInt(id, 10)],
+      ownerId: ctx.authUser!.id,
+    })
   }
 
   @Query(() => Project, { nullable: true })

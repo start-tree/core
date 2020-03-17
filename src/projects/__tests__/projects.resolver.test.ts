@@ -6,6 +6,7 @@ import { AuthService } from '../../auth'
 import { closePg, connectPg, fakeProjects, fakeUsers, syncPg, fakeVacantions } from '../../db'
 import { UsersService } from '../../users'
 import { ProjectsService } from './../projects.service'
+import { UpdateVacantion } from '../../vacantions'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -33,7 +34,7 @@ describe('ProjectsResolver', () => {
     ;({ app } = await createApp())
   })
 
-  test.only('create project', async () => {
+  test('create project', async () => {
     const createProjectMutation = `
       mutation CreateProject($data: CreateProjectInput!) {
         createProject(data: $data) {
@@ -60,6 +61,7 @@ describe('ProjectsResolver', () => {
 
     const [projectData] = fakeProjects
     const [vacantionData1, vacantionData2] = fakeVacantions
+    const vacantions = [vacantionData1, vacantionData2]
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -67,11 +69,9 @@ describe('ProjectsResolver', () => {
       token,
       query: createProjectMutation,
       variables: {
-        data: merge(projectData, { vacantions: [vacantionData1, vacantionData2] }),
+        data: merge(projectData, { vacantions }),
       },
     })
-
-    console.log(result.data.createProject)
 
     expect(result.errors).toBeUndefined()
     expect(result.data).toBeDefined()
@@ -84,19 +84,18 @@ describe('ProjectsResolver', () => {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
       },
-      vacantions: expect.arrayContaining([
-        expect.objectContaining({
-          id: expect.any(String),
-          projectId: expect.any(Number),
-          ...vacantionData1,
-        }),
-        expect.objectContaining({
-          id: expect.any(String),
-          projectId: expect.any(Number),
-          ...vacantionData2,
-        }),
-      ]),
+      vacantions: expect.arrayContaining(
+        vacantions.map((v) =>
+          expect.objectContaining({
+            id: expect.any(String),
+            projectId: expect.any(Number),
+            ...v,
+          })
+        )
+      ),
     })
+
+    expect(result.data.createProject.vacantions).toHaveLength(vacantions.length)
   })
 
   test('get project', async () => {
@@ -111,6 +110,12 @@ describe('ProjectsResolver', () => {
             id
             name
             email
+          }
+          vacantions {
+            id
+            title
+            description
+            projectId
           }
         }
       }
@@ -131,11 +136,12 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.project).toEqual({
       id: project!.id.toString(),
-      ...omit(project, ['id', 'owner']),
+      ...omit(project, ['id', 'owner', 'vacantions']),
       owner: {
         id: project!.owner!.id.toString(),
         ...omit(project!.owner, ['id', 'passwordHash']),
       },
+      vacantions: project!.vacantions.map((v) => ({ ...v, id: v.id.toString() })),
     })
   })
 
@@ -152,6 +158,12 @@ describe('ProjectsResolver', () => {
             name
             email
           }
+          vacantions {
+            id
+            title
+            description
+            projectId
+          }
         }
       }
     `
@@ -160,16 +172,28 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findUser({ email: userData.email })
 
     const [projectData] = fakeProjects
+    const [vacantionData1, vacantionData2] = fakeVacantions
+    const vacantions = [vacantionData1, vacantionData2]
     const project = await projectsService.createProject({
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
+      vacantions: vacantions,
     })
-    const newProjectData = {
-      id: project!.id,
+    const updatedProjectData = {
+      id: project!.id.toString(),
       title: `${project!.title}-updated`,
       description: `${project!.description}-updated`,
     }
+    const [, , vacantionData3, vacantionData4] = fakeVacantions
+    const updatedVacantions: UpdateVacantion[] = [
+      {
+        id: project!.vacantions[0].id.toString(),
+        ...project!.vacantions[0],
+        ...vacantionData3,
+      },
+      vacantionData4,
+    ]
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -177,7 +201,7 @@ describe('ProjectsResolver', () => {
       token,
       query: updateProjectMutation,
       variables: {
-        data: newProjectData,
+        data: merge(updatedProjectData, { vacantions: updatedVacantions }),
       },
     })
 
@@ -186,13 +210,24 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.updateProject).toEqual({
       id: project!.id.toString(),
-      ...omit(newProjectData, ['id', 'owner', 'ownerId']),
+      ...updatedProjectData,
       ownerId: user!.id,
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
       },
+      vacantions: expect.arrayContaining(
+        updatedVacantions.map((v) =>
+          expect.objectContaining({
+            ...v,
+            id: v.id ? v.id.toString() : expect.any(String),
+            projectId: project!.id,
+          })
+        )
+      ),
     })
+
+    expect(result.data.updateProject.vacantions).toHaveLength(updatedVacantions.length)
   })
 
   test('delete project', async () => {
