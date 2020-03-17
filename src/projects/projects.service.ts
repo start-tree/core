@@ -73,6 +73,6 @@ export class ProjectsService {
 
     const { affected } = await this.projectsRepo.delete(where)
 
-    return Boolean(affected)
+    return { affected }
   }
 }

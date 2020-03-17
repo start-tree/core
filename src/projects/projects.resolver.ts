@@ -1,6 +1,7 @@
 import { omit } from 'lodash'
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
-import { Context } from '../app'
+import { DeleteResult } from 'typeorm'
+import { Context, Delete } from '../app'
 import { CreateProjectInput, UpdateProjectInput } from './inputs'
 import { Project } from './project.type'
 import { ProjectsService } from './projects.service'
@@ -44,9 +45,12 @@ export class ProjectsResolver {
     return updatedProject!
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Delete)
   @Authorized()
-  async deleteProject(@Ctx() ctx: Context, @Arg('id') id: string): Promise<boolean> {
+  async deleteProject(
+    @Ctx() ctx: Context,
+    @Arg('id') id: string
+  ): Promise<Pick<DeleteResult, 'affected'>> {
     return this.projectsService.deleteProject({
       ids: [parseInt(id, 10)],
       ownerId: ctx.authUser!.id,
