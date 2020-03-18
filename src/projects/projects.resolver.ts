@@ -5,10 +5,13 @@ import { CreateProjectInput, UpdateProjectInput } from './inputs'
 import { Project } from './project.type'
 import { ProjectsService } from './projects.service'
 
-const serializeProject = (data: UpdateProjectInput) => ({
-  id: parseInt(data.id, 10),
-  ...omit(data, ['id', 'vacantions']),
-  vacantions: data.vacantions.map((v) => ({ ...v, id: v.id ? parseInt(v.id, 10) : undefined })),
+const serializeProjectInput = (input: UpdateProjectInput) => ({
+  ...omit(input, ['id', 'vacantions']),
+  id: Number(input.id),
+  vacantions: input.vacantions.map((v) => ({
+    ...omit(v, ['id']),
+    id: v.id ? Number(v.id) : undefined,
+  })),
 })
 
 @Resolver()
@@ -29,9 +32,12 @@ export class ProjectsResolver {
   @Authorized()
   async createProject(
     @Ctx() ctx: Context,
-    @Arg('data') data: CreateProjectInput
+    @Arg('input') input: CreateProjectInput
   ): Promise<Project> {
-    const project = await this.projectsService.createProject({ ...data, ownerId: ctx.authUser!.id })
+    const project = await this.projectsService.createProject({
+      ...input,
+      ownerId: ctx.authUser!.id,
+    })
     return project!
   }
 
@@ -39,26 +45,33 @@ export class ProjectsResolver {
   @Authorized()
   async updateProject(
     @Ctx() ctx: Context,
-    @Arg('data') data: UpdateProjectInput
+    @Arg('input') input: UpdateProjectInput
   ): Promise<Project | null> {
+    const ownerId = ctx.authUser!.id
+    const id = Number(input.id)
+
     const project = await this.projectsService.findProject({
-      id: parseInt(data.id, 10),
-      ownerId: ctx.authUser!.id,
+      id,
+      ownerId,
     })
 
     if (!project) {
       return null
     }
 
-    const updatedProject = await this.projectsService.updateProject(serializeProject(data))
+    const updatedProject = await this.projectsService.updateProject({
+      ...serializeProjectInput(input),
+      ownerId,
+    })
+
     return updatedProject!
   }
 
   @Mutation(() => Delete)
   @Authorized()
-  async deleteProject(@Ctx() ctx: Context, @Arg('id') id: string): Promise<Delete> {
+  async deleteProject(@Ctx() ctx: Context, @Arg('id') id: number): Promise<Delete> {
     return this.projectsService.deleteProject({
-      ids: [parseInt(id, 10)],
+      ids: [id],
       ownerId: ctx.authUser!.id,
     })
   }

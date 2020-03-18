@@ -34,8 +34,8 @@ describe('AuthResolver', () => {
     const [userData] = fakeUsers
 
     const registerMutation = `
-      mutation Register ($data: RegisterInput!) {
-        register(data: $data) {
+      mutation Register ($input: RegisterInput!) {
+        register(input: $input) {
           token
           user {
             ...${userFragment.name}
@@ -46,7 +46,7 @@ describe('AuthResolver', () => {
       ${userFragment.fragment}
     `
 
-    const registerData = {
+    const input = {
       name: `${userData.name}-register`,
       email: `${userData.email}-register`,
       password: userData.password,
@@ -56,7 +56,7 @@ describe('AuthResolver', () => {
       app,
       query: registerMutation,
       variables: {
-        data: registerData,
+        input,
       },
     })
 
@@ -67,7 +67,7 @@ describe('AuthResolver', () => {
 
     expect(result.data.register).toHaveProperty('user', {
       id: expect.any(String),
-      ...omit(registerData, ['password']),
+      ...omit(input, ['password']),
     })
   })
 
@@ -75,8 +75,8 @@ describe('AuthResolver', () => {
     const [userData] = fakeUsers
 
     const loginMutation = `
-      mutation Login ($data: LoginInput!){
-        login(data: $data) {
+      mutation Login ($input: LoginInput!){
+        login(input: $input) {
           token
           user {
             ...${userFragment.name}
@@ -86,7 +86,7 @@ describe('AuthResolver', () => {
       ${userFragment.fragment}
     `
 
-    const loginData = {
+    const input = {
       email: userData.email,
       password: userData.password,
     }
@@ -95,7 +95,7 @@ describe('AuthResolver', () => {
       app,
       query: loginMutation,
       variables: {
-        data: loginData,
+        input,
       },
     })
 

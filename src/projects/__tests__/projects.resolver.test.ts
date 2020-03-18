@@ -37,8 +37,8 @@ describe('ProjectsResolver', () => {
 
   test('create project', async () => {
     const createProjectMutation = `
-      mutation CreateProject($data: CreateProjectInput!) {
-        createProject(data: $data) {
+      mutation CreateProject($input: CreateProjectInput!) {
+        createProject(input: $input) {
           ...${projectFragment.name}
         }
       }
@@ -48,8 +48,7 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findUser({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const [vacantionData1, vacantionData2] = fakeVacantions
-    const vacantions = [vacantionData1, vacantionData2]
+    const input = merge(projectData, { vacantions: [fakeVacantions[0], fakeVacantions[1]] })
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -57,7 +56,7 @@ describe('ProjectsResolver', () => {
       token,
       query: createProjectMutation,
       variables: {
-        data: merge(projectData, { vacantions }),
+        input,
       },
     })
 
@@ -67,13 +66,13 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
       ownerId: user!.id,
-      ...omit(projectData, 'vacantions'),
+      ...omit(input, ['vacantions']),
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
       },
       vacantions: expect.arrayContaining(
-        vacantions.map((v) =>
+        input.vacantions.map((v) =>
           expect.objectContaining({
             id: expect.any(String),
             projectId: expect.any(Number),
@@ -83,7 +82,7 @@ describe('ProjectsResolver', () => {
       ),
     })
 
-    expect(result.data.createProject.vacantions).toHaveLength(vacantions.length)
+    expect(result.data.createProject.vacantions).toHaveLength(input.vacantions.length)
   })
 
   test('get project', async () => {
@@ -122,8 +121,8 @@ describe('ProjectsResolver', () => {
 
   test('update project', async () => {
     const updateProjectMutation = `
-      mutation UpdateProject($data: UpdateProjectInput!) {
-        updateProject(data: $data) {
+      mutation UpdateProject($input: UpdateProjectInput!) {
+        updateProject(input: $input) {
           ...${projectFragment.name}
         }
       }
@@ -134,28 +133,29 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findUser({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const [vacantionData1, vacantionData2] = fakeVacantions
-    const vacantions = [vacantionData1, vacantionData2]
     const project = await projectsService.createProject({
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
-      vacantions: vacantions,
+      vacantions: [fakeVacantions[0], fakeVacantions[1]],
     })
+
     const updatedProjectData = {
       id: project!.id.toString(),
       title: `${project!.title}-updated`,
       description: `${project!.description}-updated`,
     }
-    const [, , vacantionData3, vacantionData4] = fakeVacantions
-    const updatedVacantions: UpdateVacantionDto[] = [
-      {
-        id: project!.vacantions[0].id.toString(),
-        ...project!.vacantions[0],
-        ...vacantionData3,
-      },
-      vacantionData4,
-    ]
+
+    const input = merge(updatedProjectData, {
+      vacantions: [
+        {
+          id: project!.vacantions[0].id,
+          ...project!.vacantions[0],
+          ...fakeVacantions[2],
+        },
+        fakeVacantions[3],
+      ] as UpdateVacantionDto[],
+    })
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -163,7 +163,7 @@ describe('ProjectsResolver', () => {
       token,
       query: updateProjectMutation,
       variables: {
-        data: merge(updatedProjectData, { vacantions: updatedVacantions }),
+        input,
       },
     })
 
@@ -179,7 +179,7 @@ describe('ProjectsResolver', () => {
         ...omit(user, ['id', 'passwordHash']),
       },
       vacantions: expect.arrayContaining(
-        updatedVacantions.map((v) =>
+        input.vacantions.map((v) =>
           expect.objectContaining({
             ...v,
             id: v.id ? v.id.toString() : expect.any(String),
@@ -189,12 +189,12 @@ describe('ProjectsResolver', () => {
       ),
     })
 
-    expect(result.data.updateProject.vacantions).toHaveLength(updatedVacantions.length)
+    expect(result.data.updateProject.vacantions).toHaveLength(input.vacantions.length)
   })
 
   test('delete project', async () => {
     const deleteProjectMutation = `
-      mutation deleteProject($id: String!) {
+      mutation deleteProject($id: Float!) {
         deleteProject(id: $id) {
           affected
         }
@@ -217,7 +217,7 @@ describe('ProjectsResolver', () => {
       token,
       query: deleteProjectMutation,
       variables: {
-        id: project!.id.toString(),
+        id: project!.id,
       },
     })
 

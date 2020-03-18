@@ -16,8 +16,8 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth)
-  async register(@Arg('data') data: RegisterInput): Promise<Auth> {
-    const user = await this.usersService.createUser(data)
+  async register(@Arg('input') input: RegisterInput): Promise<Auth> {
+    const user = await this.usersService.createUser(input)
 
     return {
       token: this.authService.createToken(user.id),
@@ -26,14 +26,17 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth, { nullable: true })
-  async login(@Arg('data') data: LoginInput): Promise<Auth | null> {
-    const user = await this.usersService.findUser({ email: data.email })
+  async login(@Arg('input') input: LoginInput): Promise<Auth | null> {
+    const user = await this.usersService.findUser({ email: input.email })
 
     if (!user) {
       return null
     }
 
-    const passwordMatch = await this.usersService.comparePasswords(data.password, user.passwordHash)
+    const passwordMatch = await this.usersService.comparePasswords(
+      input.password,
+      user.passwordHash
+    )
 
     if (!passwordMatch) {
       return null
