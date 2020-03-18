@@ -88,7 +88,7 @@ describe('ProjectsResolver', () => {
 
   test('get project', async () => {
     const projectQuery = `
-      query Project($id: String!) {
+      query Project($id: Float!) {
         project(id: $id) {
           ...${projectFragment.name}
         }
@@ -102,7 +102,7 @@ describe('ProjectsResolver', () => {
       app,
       query: projectQuery,
       variables: {
-        id: '1',
+        id: 1,
       },
     })
 

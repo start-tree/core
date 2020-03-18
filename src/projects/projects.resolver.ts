@@ -16,8 +16,8 @@ export class ProjectsResolver {
   constructor(private projectsService: ProjectsService) {}
 
   @Query(() => Project, { nullable: true })
-  async project(@Arg('id') id: string): Promise<Project | undefined> {
-    return this.projectsService.findProject({ id: parseInt(id, 10) })
+  async project(@Arg('id') id: number): Promise<Project | undefined> {
+    return this.projectsService.findProject({ id })
   }
 
   @Query(() => [Project])
