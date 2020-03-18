@@ -3,9 +3,8 @@ import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
-import { CreateProjectDto, FindProjectDto, UpdateProjectDto } from './dtos'
+import { CreateProjectDto, FindProjectDto, FindProjectsDto, UpdateProjectDto } from './dtos'
 import { ProjectEntity } from './project.entity'
-import { FindProjectsDto } from './dtos/find-projects.dto'
 
 @Service()
 export class ProjectsService {

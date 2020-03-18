@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import { Container } from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
-import { UsersService } from '../../users'
+import { UsersService, userFragment } from '../../users'
 import { AuthService } from '../auth.service'
 
 describe('AuthResolver', () => {
@@ -34,16 +34,16 @@ describe('AuthResolver', () => {
     const [userData] = fakeUsers
 
     const registerMutation = `
-      mutation Register ($data: RegisterInput!){
+      mutation Register ($data: RegisterInput!) {
         register(data: $data) {
           token
           user {
-            id
-            name
-            email
+            ...${userFragment.name}
           }
         }
       }
+
+      ${userFragment.fragment}
     `
 
     const registerData = {

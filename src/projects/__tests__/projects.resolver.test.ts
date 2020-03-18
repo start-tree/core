@@ -6,6 +6,7 @@ import { AuthService } from '../../auth'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { UpdateVacantionDto } from '../../vacantions'
+import { projectFragment } from '../project.fragment'
 import { ProjectsService } from './../projects.service'
 
 describe('ProjectsResolver', () => {
@@ -38,23 +39,10 @@ describe('ProjectsResolver', () => {
     const createProjectMutation = `
       mutation CreateProject($data: CreateProjectInput!) {
         createProject(data: $data) {
-          id
-          title
-          description
-          ownerId
-          owner {
-            id
-            name
-            email
-          }
-          vacantions {
-            id
-            title
-            description
-            projectId
-          }
+          ...${projectFragment.name}
         }
       }
+      ${projectFragment.fragment}
     `
     const [userData] = fakeUsers
     const user = await usersService.findUser({ email: userData.email })
@@ -102,23 +90,10 @@ describe('ProjectsResolver', () => {
     const projectQuery = `
       query Project($id: String!) {
         project(id: $id) {
-          id
-          title
-          description
-          ownerId
-          owner {
-            id
-            name
-            email
-          }
-          vacantions {
-            id
-            title
-            description
-            projectId
-          }
+          ...${projectFragment.name}
         }
       }
+      ${projectFragment.fragment}
     `
 
     const project = await projectsService.findProject({ id: 1 })
@@ -149,23 +124,10 @@ describe('ProjectsResolver', () => {
     const updateProjectMutation = `
       mutation UpdateProject($data: UpdateProjectInput!) {
         updateProject(data: $data) {
-          id
-          title
-          description
-          ownerId
-          owner {
-            id
-            name
-            email
-          }
-          vacantions {
-            id
-            title
-            description
-            projectId
-          }
+          ...${projectFragment.name}
         }
       }
+      ${projectFragment.fragment}
     `
 
     const [userData] = fakeUsers
@@ -269,17 +231,10 @@ describe('ProjectsResolver', () => {
     const getProjectsQuery = `
      {
        projects {
-        id
-        title
-        description
-        ownerId
-        owner {
-          id
-          name
-          email
-        }
-       }
-     }
+        ...${projectFragment.name}
+      }
+    }
+    ${projectFragment.fragment}
     `
 
     const result = await makeQuery({

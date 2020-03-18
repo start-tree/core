@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { config as configEnv } from 'dotenv'
 import express from 'express'
 import 'reflect-metadata'
-import { createSchema } from './create-shema'
+import { createSchema } from './create-schema'
 import { getContext } from './get-context'
 
 configEnv()
