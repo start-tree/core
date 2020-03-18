@@ -5,7 +5,7 @@ import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
-import { UpdateVacantion } from '../../vacantions'
+import { UpdateVacantionDto } from '../../vacantions'
 import { ProjectsService } from './../projects.service'
 
 describe('ProjectsResolver', () => {
@@ -186,7 +186,7 @@ describe('ProjectsResolver', () => {
       description: `${project!.description}-updated`,
     }
     const [, , vacantionData3, vacantionData4] = fakeVacantions
-    const updatedVacantions: UpdateVacantion[] = [
+    const updatedVacantions: UpdateVacantionDto[] = [
       {
         id: project!.vacantions[0].id.toString(),
         ...project!.vacantions[0],
