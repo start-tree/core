@@ -1,8 +1,8 @@
 import faker from 'faker'
 import { times } from 'lodash'
 import { CreateUser } from '../users'
-import { CreateProject } from './../projects'
-import { CreateVacantion } from '../vacantions'
+import { CreateProjectDto } from './../projects'
+import { CreateVacantionDto } from '../vacantions'
 
 export const authUsers = [
   {
@@ -21,7 +21,7 @@ export const fakeUsers: CreateUser[] = [
   })),
 ]
 
-export const fakeProjects: Omit<CreateProject, 'ownerId' | 'vacantions'>[] = times(30, () => ({
+export const fakeProjects: Omit<CreateProjectDto, 'ownerId' | 'vacantions'>[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
   description: faker.lorem.paragraphs(faker.random.number(5)),
 }))
@@ -33,7 +33,7 @@ export const createFakeProjects = ({ ownerIds }: { ownerIds: number[] }) => {
   }))
 }
 
-export const fakeVacantions: Omit<CreateVacantion, 'projectId'>[] = times(30, () => ({
+export const fakeVacantions: Omit<CreateVacantionDto, 'projectId'>[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
   description: faker.lorem.paragraphs(faker.random.number(5)),
 }))

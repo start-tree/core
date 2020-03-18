@@ -1,7 +1,7 @@
 import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CreateVacantion, FindVacantion, UpdateVacantion } from './interfaces'
+import { CreateVacantionDto, FindVacantionDto, UpdateVacantionDto } from './dtos'
 import { VacantionEntity } from './vacantion.entity'
 
 @Service()
@@ -10,17 +10,17 @@ export class VacantionsService {
     @InjectRepository(VacantionEntity) private vacantionsRepo: Repository<VacantionEntity>
   ) {}
 
-  async createVacantion(data: CreateVacantion) {
+  async createVacantion(data: CreateVacantionDto) {
     const { id } = await this.vacantionsRepo.save(data)
     return this.findVacantion({ id })
   }
 
-  async updateVacantion(data: UpdateVacantion) {
+  async updateVacantion(data: UpdateVacantionDto) {
     const { id } = await this.vacantionsRepo.save(data)
     return this.findVacantion({ id })
   }
 
-  async findVacantion(where: FindVacantion) {
+  async findVacantion(where: FindVacantionDto) {
     return this.vacantionsRepo.findOne(where, { relations: ['project'] })
   }
 

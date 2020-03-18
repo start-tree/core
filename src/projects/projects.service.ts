@@ -3,8 +3,9 @@ import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
-import { CreateProject, FindProject, UpdateProject } from './interfaces'
+import { CreateProjectDto, FindProjectDto, UpdateProjectDto } from './dtos'
 import { ProjectEntity } from './project.entity'
+import { FindProjectsDto } from './dtos/find-projects.dto'
 
 @Service()
 export class ProjectsService {
@@ -13,7 +14,7 @@ export class ProjectsService {
     private vacantionsService: VacantionsService
   ) {}
 
-  async createProject(data: CreateProject) {
+  async createProject(data: CreateProjectDto) {
     const { id } = await this.projectsRepo.save(omit(data, ['vacantions']))
 
     const { vacantions } = data
@@ -27,7 +28,7 @@ export class ProjectsService {
     return this.findProject({ id })
   }
 
-  async updateProject(data: UpdateProject) {
+  async updateProject(data: UpdateProjectDto) {
     const { id } = await this.projectsRepo.save({
       ...omit(data, ['vacantions']),
     })
@@ -52,15 +53,25 @@ export class ProjectsService {
     return this.findProject({ id })
   }
 
-  async findProject(where: FindProject) {
+  async findProject(where: FindProjectDto) {
     return this.projectsRepo.findOne(where, { relations: ['owner', 'vacantions'] })
   }
 
-  async findProjects() {
+  async findProjects({ ids, ownerId }: FindProjectsDto = {}) {
+    const where: FindConditions<ProjectEntity> = {}
+
+    if (ids) {
+      where.id = In(ids)
+    }
+
+    if (ownerId) {
+      where.ownerId = ownerId
+    }
+
     return this.projectsRepo.find({ relations: ['owner', 'vacantions'] })
   }
 
-  async deleteProject({ ids, ownerId }: { ids?: number[]; ownerId?: number }) {
+  async deleteProject({ ids, ownerId }: FindProjectsDto) {
     const where: FindConditions<ProjectEntity> = {}
 
     if (ids) {
