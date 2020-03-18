@@ -17,7 +17,7 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   async register(@Arg('input') input: RegisterInput): Promise<Auth> {
-    const user = await this.usersService.createUser(input)
+    const user = await this.usersService.create(input)
 
     return {
       token: this.authService.createToken(user.id),
@@ -27,7 +27,7 @@ export class AuthResolver {
 
   @Mutation(() => Auth, { nullable: true })
   async login(@Arg('input') input: LoginInput): Promise<Auth | null> {
-    const user = await this.usersService.findUser({ email: input.email })
+    const user = await this.usersService.findOne({ email: input.email })
 
     if (!user) {
       return null

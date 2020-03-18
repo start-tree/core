@@ -20,12 +20,12 @@ export class ProjectsResolver {
 
   @Query(() => Project, { nullable: true })
   async project(@Arg('id') id: number): Promise<Project | undefined> {
-    return this.projectsService.findProject({ id })
+    return this.projectsService.findOne({ id })
   }
 
   @Query(() => [Project])
   async projects(): Promise<Project[]> {
-    return this.projectsService.findProjects()
+    return this.projectsService.find()
   }
 
   @Mutation(() => Project)
@@ -34,7 +34,7 @@ export class ProjectsResolver {
     @Ctx() ctx: Context,
     @Arg('input') input: CreateProjectInput
   ): Promise<Project> {
-    const project = await this.projectsService.createProject({
+    const project = await this.projectsService.create({
       ...input,
       ownerId: ctx.authUser!.id,
     })
@@ -50,7 +50,7 @@ export class ProjectsResolver {
     const ownerId = ctx.authUser!.id
     const id = Number(input.id)
 
-    const project = await this.projectsService.findProject({
+    const project = await this.projectsService.findOne({
       id,
       ownerId,
     })
@@ -59,7 +59,7 @@ export class ProjectsResolver {
       return null
     }
 
-    const updatedProject = await this.projectsService.updateProject({
+    const updatedProject = await this.projectsService.update({
       ...serializeProjectInput(input),
       ownerId,
     })
@@ -70,7 +70,7 @@ export class ProjectsResolver {
   @Mutation(() => Delete)
   @Authorized()
   async deleteProject(@Ctx() ctx: Context, @Arg('id') id: number): Promise<Delete> {
-    return this.projectsService.deleteProject({
+    return this.projectsService.delete({
       ids: [id],
       ownerId: ctx.authUser!.id,
     })

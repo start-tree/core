@@ -13,7 +13,7 @@ export async function getContext({ req }: ExpressContext) {
 
     const usersService = Container.get(UsersService)
 
-    ctx.authUser = await usersService.findUser({ id: payload.id })
+    ctx.authUser = await usersService.findOne({ id: payload.id })
   }
 
   return ctx

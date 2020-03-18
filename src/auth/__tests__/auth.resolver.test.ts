@@ -103,7 +103,7 @@ describe('AuthResolver', () => {
     expect(result.data).toBeDefined()
     expect(result.data.login).toHaveProperty('token')
 
-    const user = await usersService.findUser({ email: userData.email })
+    const user = await usersService.findOne({ email: userData.email })
 
     expect(result.data.login).toHaveProperty('user', {
       id: user!.id.toString(),
@@ -114,7 +114,7 @@ describe('AuthResolver', () => {
   test('get auth user', async () => {
     const [userData] = fakeUsers
 
-    const user = await usersService.findUser({ email: userData.email })
+    const user = await usersService.findOne({ email: userData.email })
     const token = authService.createToken(user!.id)
 
     const meQuery = `

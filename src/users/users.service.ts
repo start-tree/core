@@ -10,14 +10,14 @@ import { UserEntity } from './user.entity'
 export class UsersService {
   constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) {}
 
-  async createUser(data: CreateUser) {
+  async create(data: CreateUser) {
     return this.userRepo.save({
       ...omit(data, ['passwordHash']),
       passwordHash: await this.createPassword(data.password),
     })
   }
 
-  async findUser(where: FindUser) {
+  async findOne(where: FindUser) {
     return this.userRepo.findOne(where)
   }
 

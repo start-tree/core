@@ -45,7 +45,7 @@ describe('ProjectsResolver', () => {
       ${projectFragment.fragment}
     `
     const [userData] = fakeUsers
-    const user = await usersService.findUser({ email: userData.email })
+    const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
     const input = merge(projectData, { vacantions: [fakeVacantions[0], fakeVacantions[1]] })
@@ -95,7 +95,7 @@ describe('ProjectsResolver', () => {
       ${projectFragment.fragment}
     `
 
-    const project = await projectsService.findProject({ id: 1 })
+    const project = await projectsService.findOne({ id: 1 })
 
     const result = await makeQuery({
       app,
@@ -130,10 +130,10 @@ describe('ProjectsResolver', () => {
     `
 
     const [userData] = fakeUsers
-    const user = await usersService.findUser({ email: userData.email })
+    const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const project = await projectsService.createProject({
+    const project = await projectsService.create({
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
@@ -202,10 +202,10 @@ describe('ProjectsResolver', () => {
     `
 
     const [userData] = fakeUsers
-    const user = await usersService.findUser({ email: userData.email })
+    const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const project = await projectsService.createProject({
+    const project = await projectsService.create({
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
