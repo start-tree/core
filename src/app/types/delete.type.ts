@@ -3,6 +3,6 @@ import { DeleteResult } from 'typeorm'
 
 @ObjectType()
 export class Delete implements Pick<DeleteResult, 'affected'> {
-  @Field()
-  affected: number
+  @Field({ nullable: true })
+  affected?: number
 }

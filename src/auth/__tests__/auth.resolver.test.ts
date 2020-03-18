@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import { Container } from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { closePg, connectPg, fakeUsers, syncPg } from '../../db'
-import { UsersService, userFragment } from '../../users'
+import { userFragment, UsersService } from '../../users'
 import { AuthService } from '../auth.service'
 
 describe('AuthResolver', () => {
@@ -79,12 +79,11 @@ describe('AuthResolver', () => {
         login(data: $data) {
           token
           user {
-            id
-            name
-            email
+            ...${userFragment.name}
           }
         }
       }
+      ${userFragment.fragment}
     `
 
     const loginData = {
@@ -121,11 +120,10 @@ describe('AuthResolver', () => {
     const meQuery = `
       {
         me {
-          id
-          name
-          email
+          ...${userFragment.name}
         }
       }
+      ${userFragment.fragment}
     `
 
     const result = await makeQuery({ app, query: meQuery, token })
