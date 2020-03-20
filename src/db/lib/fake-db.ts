@@ -5,6 +5,8 @@ import { VacantionsService } from '../../vacantions'
 import { createFakeProjects, createFakeVacantions, fakeUsers } from '../fake-data'
 
 export const fakeDb = async () => {
+  process.env.NODE_ENV !== 'test' && console.log('Start fake db')
+
   const usersService = Container.get(UsersService)
   const users = await Promise.all(fakeUsers.map((u) => usersService.create(u)))
 
@@ -15,4 +17,6 @@ export const fakeDb = async () => {
   const vacantionsService = Container.get(VacantionsService)
   const vacantionsData = createFakeVacantions({ projectsIds: projects.map((p) => p!.id) })
   await Promise.all(vacantionsData.map((v) => vacantionsService.create(v)))
+
+  process.env.NODE_ENV !== 'test' && console.log('Finish fake db')
 }
