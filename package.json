@@ -11,7 +11,8 @@
     "start:dev": "ts-node-dev src",
     "format": "prettier \"src/**/*\" --write",
     "lint": "eslint src/**/* --ext .ts",
-    "test": "jest -i"
+    "test": "jest -i",
+    "script:create-schema": "ts-node src/app/scripts/create-schema.script.ts"
   },
   "jest": {
     "transform": {
