@@ -10,7 +10,7 @@
     "start": "ts-node src",
     "dev": "ts-node-dev src",
     "format": "prettier \"src/**/*\" --write",
-    "lint": "eslint src/**/* --ext .ts",
+    "lint": "eslint --ext .ts src",
     "test": "jest -i",
     "create-schema": "ts-node src/app/scripts/create-schema.script.ts",
     "fake-db": "ts-node src/app/scripts/fake-db.script.ts"
