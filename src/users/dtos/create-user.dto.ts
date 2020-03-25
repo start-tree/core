@@ -1,7 +1,5 @@
 import { UserEntity } from './../user.entity'
 
-export class CreateUserDto implements Omit<UserEntity, 'id' | 'passwordHash'> {
-  name: string
-  email: string
+export type CreateUserData = Omit<UserEntity, 'id' | 'passwordHash'> & {
   password: string
 }

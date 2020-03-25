@@ -3,21 +3,21 @@ import { omit } from 'lodash'
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CreateUserDto, FindUserDto } from './dtos'
+import { CreateUserData, FindUserData } from './dtos'
 import { UserEntity } from './user.entity'
 
 @Service()
 export class UsersService {
   constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserData) {
     return this.userRepository.save({
       ...omit(data, ['passwordHash']),
       passwordHash: await this.createPassword(data.password),
     })
   }
 
-  async findOne(where: FindUserDto) {
+  async findOne(where: FindUserData) {
     return this.userRepository.findOne(where)
   }
 

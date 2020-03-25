@@ -1,23 +1,15 @@
-import { CreateProjectDto } from './../dtos/create-project.dto'
 import { Express } from 'express'
-import { merge, omit } from 'lodash'
+import { omit } from 'lodash'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
-import {
-  closePg,
-  connectPg,
-  fakeProjects,
-  fakeUsers,
-  fakeVacantions,
-  syncPg,
-  fakeCategories,
-} from '../../db'
+import { CategoriesService, CategoryEntity } from '../../categories'
+import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
-import { UpdateVacantionDto } from '../../vacantions'
 import { projectFragment } from '../lib/project.fragment'
+import { CreateProjectInput } from './../dtos/create-project.dto'
 import { ProjectsService } from './../projects.service'
-import { CategoriesService, CreateCategoryDto } from '../../categories'
+import { UpdateProjectInput } from '../dtos'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -26,6 +18,7 @@ describe('ProjectsResolver', () => {
   let authService: AuthService
   let projectsService: ProjectsService
   let categoriesService: CategoriesService
+  let categories: CategoryEntity[]
 
   beforeAll(async () => {
     await connectPg()
@@ -39,6 +32,8 @@ describe('ProjectsResolver', () => {
 
   beforeEach(async () => {
     await syncPg({ fakeDb: true })
+
+    categories = await categoriesService.find()
   })
 
   afterAll(async () => {
@@ -58,15 +53,8 @@ describe('ProjectsResolver', () => {
     const [userData] = fakeUsers
     const user = await usersService.findOne({ email: userData.email })
 
-    const [categoryData1, categoryData2] = fakeCategories
-    const categories = await Promise.all([
-      categoriesService.create(categoryData1),
-      categoriesService.create(categoryData2),
-    ])
-
     const [projectData] = fakeProjects
-
-    const input: Omit<CreateProjectDto, 'ownerId'> = {
+    const input: Omit<CreateProjectInput, 'ownerId'> = {
       ...projectData,
       vacantions: [fakeVacantions[0], fakeVacantions[1]],
       categoriesIds: [categories[0].id, categories[1].id],
@@ -102,13 +90,16 @@ describe('ProjectsResolver', () => {
           })
         )
       ),
-      categories: expect.arrayContaining(categories.map((c) => ({ ...c, id: c.id.toString() }))),
+      categories: expect.arrayContaining(
+        [categories[0], categories[1]].map((c) => ({ ...c, id: c.id.toString() }))
+      ),
     })
 
     expect(result.data.createProject.vacantions).toHaveLength(input.vacantions!.length)
+    expect(result.data.createProject.categories).toHaveLength(input.categoriesIds!.length)
   })
 
-  test.only('get project', async () => {
+  test('get project', async () => {
     const projectQuery = `
       query Project($id: Float!) {
         project(id: $id) {
@@ -157,11 +148,13 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
+
     const project = await projectsService.create({
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
       vacantions: [fakeVacantions[0], fakeVacantions[1]],
+      categoriesIds: [categories[0].id, categories[1].id],
     })
 
     const updatedProjectData = {
@@ -170,16 +163,17 @@ describe('ProjectsResolver', () => {
       description: `${project!.description}-updated`,
     }
 
-    const input = merge(updatedProjectData, {
+    const input: Omit<UpdateProjectInput, 'ownerId'> = {
+      ...updatedProjectData,
       vacantions: [
         {
-          id: project!.vacantions![0].id,
           ...project!.vacantions![0],
           ...fakeVacantions[2],
         },
         fakeVacantions[3],
-      ] as UpdateVacantionDto[],
-    })
+      ],
+      categoriesIds: [categories[2].id, categories[3].id],
+    }
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -195,7 +189,7 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.updateProject).toEqual({
-      ...updatedProjectData,
+      ...omit(updatedProjectData, ['vacantions', 'categories']),
       id: project!.id.toString(),
       ownerId: user!.id,
       owner: {
@@ -203,7 +197,7 @@ describe('ProjectsResolver', () => {
         ...omit(user, ['id', 'passwordHash']),
       },
       vacantions: expect.arrayContaining(
-        input.vacantions.map((v) =>
+        input.vacantions!.map((v) =>
           expect.objectContaining({
             ...v,
             id: v.id ? v.id.toString() : expect.any(String),
@@ -211,9 +205,18 @@ describe('ProjectsResolver', () => {
           })
         )
       ),
+      categories: expect.arrayContaining(
+        [categories[2], categories[3]].map((c) =>
+          expect.objectContaining({
+            ...c,
+            id: c.id.toString(),
+          })
+        )
+      ),
     })
 
-    expect(result.data.updateProject.vacantions).toHaveLength(input.vacantions.length)
+    expect(result.data.updateProject.vacantions).toHaveLength(input.vacantions!.length)
+    expect(result.data.updateProject.categories).toHaveLength(input.categoriesIds!.length)
   })
 
   test('delete project', async () => {
@@ -233,6 +236,8 @@ describe('ProjectsResolver', () => {
       title: `${projectData.title}-create`,
       description: `${projectData.description}-create`,
       ownerId: user!.id,
+      categoriesIds: [categories[0].id, categories[1].id],
+      vacantions: [fakeVacantions[0], fakeVacantions[1]],
     })
 
     const token = authService.createToken(user!.id)

@@ -1,11 +1,11 @@
 import faker from 'faker'
 import { times } from 'lodash'
-import { CreateUserDto } from '../users'
-import { CreateProjectDto } from './../projects'
-import { CreateVacantionDto } from '../vacantions'
+import { CreateUserData } from '../users'
+import { CreateProjectInput } from './../projects'
+import { CreateVacantionData } from '../vacantions'
 import { CreateCategoryDto } from '../categories'
 
-export const authUsers: CreateUserDto[] = [
+export const authUsers: CreateUserData[] = [
   {
     name: 'test-user',
     email: 'test@mail.com',
@@ -13,7 +13,7 @@ export const authUsers: CreateUserDto[] = [
   },
 ]
 
-export const fakeUsers: CreateUserDto[] = [
+export const fakeUsers: CreateUserData[] = [
   ...authUsers,
   ...times(10, () => ({
     name: faker.name.findName(),
@@ -27,7 +27,7 @@ export const fakeCategories: CreateCategoryDto[] = times(10, () => ({
 }))
 
 export const fakeProjects: Omit<
-  CreateProjectDto,
+  CreateProjectInput,
   'ownerId' | 'vacantions' | 'categoriesIds'
 >[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
@@ -48,7 +48,7 @@ export const createFakeProjects = ({
   }))
 }
 
-export const fakeVacantions: Omit<CreateVacantionDto, 'projectId'>[] = times(30, () => ({
+export const fakeVacantions: Omit<CreateVacantionData, 'projectId'>[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
   description: faker.lorem.paragraphs(faker.random.number(5)),
 }))

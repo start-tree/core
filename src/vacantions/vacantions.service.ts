@@ -1,7 +1,12 @@
 import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CreateVacantionDto, FindVacantionDto, UpdateVacantionDto } from './dtos'
+import {
+  CreateVacantionData,
+  FindVacantionData,
+  UpdateVacantionData,
+  FindVacantionsData,
+} from './dtos'
 import { VacantionEntity } from './vacantion.entity'
 
 @Service()
@@ -10,17 +15,17 @@ export class VacantionsService {
     @InjectRepository(VacantionEntity) private vacantionsRepo: Repository<VacantionEntity>
   ) {}
 
-  async create(data: CreateVacantionDto) {
+  async create(data: CreateVacantionData) {
     const { id } = await this.vacantionsRepo.save(data)
     return this.findOne({ id })
   }
 
-  async update(data: UpdateVacantionDto) {
+  async update(data: UpdateVacantionData) {
     const { id } = await this.vacantionsRepo.save(data)
     return this.findOne({ id })
   }
 
-  async findOne(where: FindVacantionDto) {
+  async findOne(where: FindVacantionData) {
     return this.vacantionsRepo.findOne(where, { relations: ['project'] })
   }
 
@@ -38,7 +43,7 @@ export class VacantionsService {
     return this.vacantionsRepo.find({ where })
   }
 
-  async delete({ ids }: { ids: number[] }) {
+  async delete({ ids }: FindVacantionsData) {
     const where: FindConditions<VacantionEntity> = {}
 
     if (ids) {
@@ -49,7 +54,7 @@ export class VacantionsService {
     return Boolean(affected)
   }
 
-  async saveForProject(data: UpdateVacantionDto[], projectId: number) {
+  async saveForProject(data: UpdateVacantionData[], projectId: number) {
     const existedVacantions = await this.find({ projectId })
 
     const vacantionsIdsToDelete = existedVacantions

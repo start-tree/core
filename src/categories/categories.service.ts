@@ -19,4 +19,8 @@ export class CategoriesService {
   async findOne({ id }: { id: number }) {
     return this.categoryRepository.findOne({ id })
   }
+
+  async find() {
+    return this.categoryRepository.find()
+  }
 }

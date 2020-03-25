@@ -1,27 +1,17 @@
 import { Field, InputType } from 'type-graphql'
-import { CreateVacantionDto, CreateVacantionInput } from './create-vacantion.dto'
+import { CreateVacantionData } from './create-vacantion.dto'
+import { VacantionEntity } from '../vacantion.entity'
 
-export class UpdateVacantionDto implements Omit<CreateVacantionDto, 'projectId'> {
-  id?: number
-
-  title: string
-
-  description: string
-
-  projectId?: number
-}
+export type UpdateVacantionData = CreateVacantionData & Partial<Pick<VacantionEntity, 'id'>>
 
 @InputType()
-export class UpdateVacantionInput implements Omit<CreateVacantionInput, 'project' | 'id'> {
+export class UpdateVacantionInput implements UpdateVacantionData {
   @Field({ nullable: true })
-  id: number
+  id?: number
 
   @Field()
   title: string
 
   @Field()
   description: string
-
-  @Field()
-  projectId: number
 }
