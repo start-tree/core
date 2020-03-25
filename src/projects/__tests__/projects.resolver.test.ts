@@ -19,20 +19,19 @@ describe('ProjectsResolver', () => {
   beforeAll(async () => {
     await connectPg()
     await syncPg()
-
+    app = await createApp()
     usersService = Container.get(UsersService)
     authService = Container.get(AuthService)
     projectsService = Container.get(ProjectsService)
   })
 
+  beforeEach(async () => {
+    await syncPg({ fakeDb: true })
+  })
+
   afterAll(async () => {
     await syncPg()
     await closePg()
-  })
-
-  beforeEach(async () => {
-    await syncPg({ fakeDb: true })
-    ;({ app } = await createApp())
   })
 
   test('create project', async () => {

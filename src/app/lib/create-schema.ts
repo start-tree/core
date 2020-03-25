@@ -1,7 +1,11 @@
 import { buildSchema } from 'type-graphql'
 import Container from 'typedi'
-import { appResolvers } from '../app.resolvers'
 import { authChecker } from './auth-checker'
+import { UsersResolver } from '../../users'
+import { AuthResolver } from '../../auth'
+import { ProjectsResolver } from '../../projects'
+
+const appResolvers = [UsersResolver, AuthResolver, ProjectsResolver]
 
 export function createSchema() {
   return buildSchema({

@@ -1,4 +1,4 @@
-import { createFragment } from '../app/lib'
+import { createFragment } from '../app/lib/create-fragment'
 
 export const vacantionFragment = createFragment({
   name: 'vacantionFields',

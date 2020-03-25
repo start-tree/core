@@ -17,5 +17,5 @@ export async function createApp() {
 
   server.applyMiddleware({ app })
 
-  return { server, app }
+  return app
 }

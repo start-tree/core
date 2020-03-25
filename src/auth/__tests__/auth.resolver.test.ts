@@ -14,20 +14,18 @@ describe('AuthResolver', () => {
 
   beforeAll(async () => {
     await connectPg()
-    await syncPg()
-
+    app = await createApp()
     usersService = Container.get(UsersService)
     authService = Container.get(AuthService)
+  })
+
+  beforeEach(async () => {
+    await syncPg({ fakeDb: true })
   })
 
   afterAll(async () => {
     await syncPg()
     await closePg()
-  })
-
-  beforeEach(async () => {
-    await syncPg({ fakeDb: true })
-    ;({ app } = await createApp())
   })
 
   test('register user', async () => {
