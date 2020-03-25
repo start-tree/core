@@ -12,3 +12,6 @@
 - [ ] Add search projects by categories
 
 - [ ] Add categoeries resolver, categories query
+
+- [ ] Check entities creation with cascase <https://github.com/typeorm/typeorm/blob/next/docs/many-to-many-relations.md#deleting-many-to-many-relations>
+      https://github.com/typeorm/typeorm/blob/next/docs/relations.md
