@@ -8,17 +8,17 @@ import { UserEntity } from './user.entity'
 
 @Service()
 export class UsersService {
-  constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) {}
+  constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
   async create(data: CreateUserDto) {
-    return this.userRepo.save({
+    return this.userRepository.save({
       ...omit(data, ['passwordHash']),
       passwordHash: await this.createPassword(data.password),
     })
   }
 
   async findOne(where: FindUserDto) {
-    return this.userRepo.findOne(where)
+    return this.userRepository.findOne(where)
   }
 
   async createPassword(password: string) {

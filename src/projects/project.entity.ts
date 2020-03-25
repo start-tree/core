@@ -1,7 +1,16 @@
 import { Field, ID, ObjectType } from 'type-graphql'
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm'
 import { UserEntity } from '../users'
 import { VacantionEntity } from '../vacantions'
+import { CategoryEntity } from '../categories'
 
 @Entity()
 @ObjectType('Project')
@@ -32,4 +41,9 @@ export class ProjectEntity {
   )
   @Field(() => [VacantionEntity])
   vacantions: VacantionEntity[]
+
+  @ManyToMany(() => CategoryEntity)
+  @JoinTable()
+  @Field(() => [CategoryEntity])
+  categories: CategoryEntity[]
 }

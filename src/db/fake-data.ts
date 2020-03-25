@@ -3,8 +3,9 @@ import { times } from 'lodash'
 import { CreateUserDto } from '../users'
 import { CreateProjectDto } from './../projects'
 import { CreateVacantionDto } from '../vacantions'
+import { CreateCategoryDto } from '../categories'
 
-export const authUsers = [
+export const authUsers: CreateUserDto[] = [
   {
     name: 'test-user',
     email: 'test@mail.com',
@@ -21,15 +22,29 @@ export const fakeUsers: CreateUserDto[] = [
   })),
 ]
 
-export const fakeProjects: Omit<CreateProjectDto, 'ownerId' | 'vacantions'>[] = times(30, () => ({
+export const fakeCategories: CreateCategoryDto[] = times(10, () => ({
+  name: faker.lorem.words(faker.random.number(3)),
+}))
+
+export const fakeProjects: Omit<
+  CreateProjectDto,
+  'ownerId' | 'vacantions' | 'categoriesIds'
+>[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
   description: faker.lorem.paragraphs(faker.random.number(5)),
 }))
 
-export const createFakeProjects = ({ ownerIds }: { ownerIds: number[] }) => {
+export const createFakeProjects = ({
+  ownerIds,
+  categoriesIds,
+}: {
+  ownerIds: number[]
+  categoriesIds: number[]
+}) => {
   return fakeProjects.map((p) => ({
     ...p,
     ownerId: ownerIds[faker.random.number(ownerIds.length - 1)],
+    categoriesIds: categoriesIds.slice(faker.random.number(categoriesIds.length - 1)),
   }))
 }
 
@@ -39,7 +54,7 @@ export const fakeVacantions: Omit<CreateVacantionDto, 'projectId'>[] = times(30,
 }))
 
 export const createFakeVacantions = ({ projectsIds }: { projectsIds: number[] }) => {
-  return fakeProjects.map((p) => ({
+  return fakeVacantions.map((p) => ({
     ...p,
     projectId: projectsIds[faker.random.number(projectsIds.length - 1)],
   }))
