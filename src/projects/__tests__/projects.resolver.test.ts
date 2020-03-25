@@ -167,7 +167,7 @@ describe('ProjectsResolver', () => {
       ...updatedProjectData,
       vacantions: [
         {
-          ...project!.vacantions![0],
+          ...omit(project!.vacantions![0], ['projectId']),
           ...fakeVacantions[2],
         },
         fakeVacantions[3],

@@ -12,15 +12,6 @@ export type CreateProjectData = Omit<
 }
 
 @InputType()
-class CreateProjectVacantionInput implements Omit<CreateVacantionInput, 'projectId'> {
-  @Field()
-  title: string
-
-  @Field()
-  description: string
-}
-
-@InputType('CreateProjectInput')
 export class CreateProjectInput implements Omit<CreateProjectData, 'ownerId' | 'vacantions'> {
   @Field()
   title: string
@@ -31,6 +22,6 @@ export class CreateProjectInput implements Omit<CreateProjectData, 'ownerId' | '
   @Field(() => [Number])
   categoriesIds: number[]
 
-  @Field(() => [CreateProjectVacantionInput], { nullable: true })
-  vacantions: Omit<CreateVacantionInput, 'projectId'>[]
+  @Field(() => [CreateVacantionInput])
+  vacantions: CreateVacantionInput[]
 }

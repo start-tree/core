@@ -9,21 +9,6 @@ export type UpdateProjectData = Omit<CreateProjectData, 'vacantions'> &
   }
 
 @InputType()
-class UpdateProjectVacantionInput implements Omit<UpdateVacantionInput, 'projectId' | 'id'> {
-  @Field({ nullable: true })
-  id?: number
-
-  @Field()
-  title: string
-
-  @Field()
-  description: string
-
-  @Field({ nullable: true })
-  projectId?: number
-}
-
-@InputType('UpdateProjectInput')
 export class UpdateProjectInput implements Omit<CreateProjectInput, 'vacantions'> {
   @Field()
   id: number
@@ -37,8 +22,8 @@ export class UpdateProjectInput implements Omit<CreateProjectInput, 'vacantions'
   @Field(() => [Number])
   categoriesIds: number[]
 
-  @Field(() => [UpdateProjectVacantionInput])
-  vacantions: UpdateProjectVacantionInput[]
+  @Field(() => [UpdateVacantionInput])
+  vacantions: UpdateVacantionInput[]
 
   ownerId: number
 }

@@ -10,7 +10,4 @@ export class CreateVacantionInput implements CreateVacantionData {
 
   @Field()
   description: string
-
-  @Field()
-  projectId: number
 }
