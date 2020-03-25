@@ -19,6 +19,6 @@ export class CreateProjectInput implements Pick<Project, 'title' | 'description'
   @Field()
   description: string
 
-  @Field(() => [CreateProjectVacantionInput])
-  vacantions: CreateProjectVacantionInput[]
+  @Field(() => [CreateProjectVacantionInput], { nullable: true })
+  vacantions?: CreateProjectVacantionInput[]
 }

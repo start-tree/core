@@ -115,7 +115,7 @@ describe('ProjectsResolver', () => {
         id: project!.owner!.id.toString(),
         ...omit(project!.owner, ['id', 'passwordHash']),
       },
-      vacantions: project!.vacantions.map((v) => ({ ...v, id: v.id.toString() })),
+      vacantions: project!.vacantions!.map((v) => ({ ...v, id: v.id.toString() })),
     })
   })
 
@@ -149,8 +149,8 @@ describe('ProjectsResolver', () => {
     const input = merge(updatedProjectData, {
       vacantions: [
         {
-          id: project!.vacantions[0].id,
-          ...project!.vacantions[0],
+          id: project!.vacantions![0].id,
+          ...project!.vacantions![0],
           ...fakeVacantions[2],
         },
         fakeVacantions[3],

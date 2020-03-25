@@ -28,6 +28,6 @@ export class UpdateProjectInput implements Pick<Project, 'title' | 'description'
   @Field()
   description: string
 
-  @Field(() => [UpdateProjectVacantionInput])
-  vacantions: UpdateProjectVacantionInput[]
+  @Field(() => [UpdateProjectVacantionInput], { nullable: true })
+  vacantions?: UpdateProjectVacantionInput[]
 }

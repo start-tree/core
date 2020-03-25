@@ -46,7 +46,10 @@ export class ProjectsService {
       ...omit(data, ['vacantions']),
     })
 
-    await this.vacantionsService.saveForProject(data.vacantions, id)
+    const { vacantions } = data
+    if (vacantions) {
+      await this.vacantionsService.saveForProject(vacantions, id)
+    }
 
     return this.findOne({ id })
   }

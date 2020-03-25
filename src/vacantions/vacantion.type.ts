@@ -13,9 +13,9 @@ export class Vacantion implements Omit<VacantionEntity, 'project'> {
   @Field()
   description: string
 
-  @Field()
-  projectId: number
+  @Field({ nullable: true })
+  projectId?: number
 
-  @Field(() => Project)
-  project: Project
+  @Field(() => Project, { nullable: true })
+  project?: Project
 }

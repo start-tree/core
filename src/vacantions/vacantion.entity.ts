@@ -12,9 +12,9 @@ export class VacantionEntity {
   @Column()
   description: string
 
-  @Column()
-  projectId: number
+  @Column({ nullable: true })
+  projectId?: number
 
-  @ManyToOne(() => ProjectEntity)
-  project: ProjectEntity
+  @ManyToOne(() => ProjectEntity, { nullable: true, onDelete: 'CASCADE' })
+  project?: ProjectEntity
 }

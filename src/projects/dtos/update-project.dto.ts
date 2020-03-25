@@ -10,5 +10,5 @@ export class UpdateProjectDto implements CreateProjectDto {
 
   ownerId: number
 
-  vacantions: UpdateVacantionDto[]
+  vacantions?: UpdateVacantionDto[]
 }

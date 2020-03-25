@@ -1,5 +1,16 @@
 import { omit } from 'lodash'
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  ArgsType,
+  Field,
+  Int,
+  Args,
+} from 'type-graphql'
 import { Context, Delete } from '../app'
 import { CreateProjectInput, UpdateProjectInput } from './inputs'
 import { Project } from './project.type'
@@ -8,11 +19,19 @@ import { ProjectsService } from './projects.service'
 const serializeProjectInput = (input: UpdateProjectInput) => ({
   ...omit(input, ['id', 'vacantions']),
   id: Number(input.id),
-  vacantions: input.vacantions.map((v) => ({
-    ...omit(v, ['id']),
-    id: v.id ? Number(v.id) : undefined,
-  })),
+  vacantions: input.vacantions
+    ? input.vacantions.map((v) => ({
+        ...omit(v, ['id']),
+        id: v.id ? Number(v.id) : undefined,
+      }))
+    : [],
 })
+
+@ArgsType()
+class FindProjectsArgs {
+  @Field(() => Int, { nullable: true })
+  ownerId?: number
+}
 
 @Resolver()
 export class ProjectsResolver {
@@ -24,8 +43,8 @@ export class ProjectsResolver {
   }
 
   @Query(() => [Project])
-  async projects(): Promise<Project[]> {
-    return this.projectsService.find()
+  async projects(@Args() args: FindProjectsArgs): Promise<Project[]> {
+    return this.projectsService.find(args)
   }
 
   @Mutation(() => Project)
