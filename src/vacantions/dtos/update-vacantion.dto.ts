@@ -1,6 +1,5 @@
 import { Field, InputType } from 'type-graphql'
-import { Vacantion } from '../vacantion.type'
-import { CreateVacantionDto } from './create-vacantion.dto'
+import { CreateVacantionDto, CreateVacantionInput } from './create-vacantion.dto'
 
 export class UpdateVacantionDto implements Omit<CreateVacantionDto, 'projectId'> {
   id?: number
@@ -13,7 +12,7 @@ export class UpdateVacantionDto implements Omit<CreateVacantionDto, 'projectId'>
 }
 
 @InputType()
-export class UpdateVacantionInput implements Omit<Vacantion, 'project' | 'id'> {
+export class UpdateVacantionInput implements Omit<CreateVacantionInput, 'project' | 'id'> {
   @Field({ nullable: true })
   id: number
 

@@ -1,29 +1,29 @@
+import { ProjectEntity } from './project.entity'
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context, Delete } from '../app'
 import { CreateProjectInput, FindProjectsArgs, UpdateProjectInput } from './dtos'
-import { Project } from './project.type'
 import { ProjectsService } from './projects.service'
 
 @Resolver()
 export class ProjectsResolver {
   constructor(private projectsService: ProjectsService) {}
 
-  @Query(() => Project, { nullable: true })
-  async project(@Arg('id') id: number): Promise<Project | undefined> {
+  @Query(() => ProjectEntity, { nullable: true })
+  async project(@Arg('id') id: number): Promise<ProjectEntity | undefined> {
     return this.projectsService.findOne({ id })
   }
 
-  @Query(() => [Project])
-  async projects(@Args() args: FindProjectsArgs): Promise<Project[]> {
+  @Query(() => [ProjectEntity])
+  async projects(@Args() args: FindProjectsArgs): Promise<ProjectEntity[]> {
     return this.projectsService.find(args)
   }
 
-  @Mutation(() => Project)
+  @Mutation(() => ProjectEntity)
   @Authorized()
   async createProject(
     @Ctx() ctx: Context,
     @Arg('input') input: CreateProjectInput
-  ): Promise<Project> {
+  ): Promise<ProjectEntity> {
     const project = await this.projectsService.create({
       ...input,
       ownerId: ctx.authUser!.id,
@@ -31,12 +31,12 @@ export class ProjectsResolver {
     return project!
   }
 
-  @Mutation(() => Project, { nullable: true })
+  @Mutation(() => ProjectEntity, { nullable: true })
   @Authorized()
   async updateProject(
     @Ctx() ctx: Context,
     @Arg('input') input: UpdateProjectInput
-  ): Promise<Project | null> {
+  ): Promise<ProjectEntity | null> {
     const ownerId = ctx.authUser!.id
     const id = Number(input.id)
 

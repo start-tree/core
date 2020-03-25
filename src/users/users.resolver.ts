@@ -1,10 +1,10 @@
 import { Query, Resolver } from 'type-graphql'
-import { User } from './user.type'
+import { UserEntity } from './user.entity'
 
 @Resolver()
 export class UsersResolver {
-  @Query(() => [User])
-  users(): User[] {
-    return [{ id: 1, email: 'vike', name: 'bike' }]
+  @Query(() => [UserEntity])
+  users(): UserEntity[] {
+    return [{ id: 1, email: 'vike', name: 'bike', passwordHash: 'dsfds' }]
   }
 }

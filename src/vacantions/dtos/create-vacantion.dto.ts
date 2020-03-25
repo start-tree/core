@@ -1,6 +1,5 @@
 import { Field, InputType } from 'type-graphql'
 import { VacantionEntity } from '../vacantion.entity'
-import { Vacantion } from '../vacantion.type'
 
 export class CreateVacantionDto implements Omit<VacantionEntity, 'id' | 'project'> {
   title: string
@@ -11,7 +10,7 @@ export class CreateVacantionDto implements Omit<VacantionEntity, 'id' | 'project
 }
 
 @InputType()
-export class CreateVacantionInput implements Omit<Vacantion, 'project' | 'id'> {
+export class CreateVacantionInput implements Omit<VacantionEntity, 'project' | 'id'> {
   @Field()
   title: string
 

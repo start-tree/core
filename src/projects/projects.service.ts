@@ -5,7 +5,6 @@ import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
 import { CreateProjectDto, FindProjectDto, FindProjectsDto, UpdateProjectDto } from './dtos'
 import { ProjectEntity } from './project.entity'
-import { Project } from './project.type'
 
 const makeWhere = ({ ids, ownerId }: FindProjectsDto) => {
   const where: FindConditions<ProjectEntity> = {}
@@ -28,7 +27,7 @@ export class ProjectsService {
     private vacantionsService: VacantionsService
   ) {}
 
-  async create(data: CreateProjectDto): Promise<Project> {
+  async create(data: CreateProjectDto) {
     const { id } = await this.projectsRepo.save(omit(data, ['vacantions']))
 
     const { vacantions } = data
@@ -42,7 +41,7 @@ export class ProjectsService {
     return project!
   }
 
-  async update(data: UpdateProjectDto): Promise<Project> {
+  async update(data: UpdateProjectDto) {
     const { id } = await this.projectsRepo.save(omit(data, ['vacantions']))
 
     const { vacantions } = data
@@ -54,11 +53,11 @@ export class ProjectsService {
     return project!
   }
 
-  async findOne(where: FindProjectDto): Promise<Project | undefined> {
+  async findOne(where: FindProjectDto) {
     return this.projectsRepo.findOne(where, { relations: ['owner', 'vacantions'] })
   }
 
-  async find(query: FindProjectsDto = {}): Promise<Project[]> {
+  async find(query: FindProjectsDto = {}) {
     return this.projectsRepo.find({ where: makeWhere(query), relations: ['owner', 'vacantions'] })
   }
 

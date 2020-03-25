@@ -1,17 +1,17 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context } from '../app'
-import { User, UsersService } from '../users'
+import { UsersService, UserEntity } from '../users'
 import { AuthService } from './auth.service'
-import { Auth } from './auth.type'
-import { LoginInput, RegisterInput } from './inputs'
+import { Auth } from './dtos/auth.dto'
+import { LoginInput, RegisterInput } from './dtos'
 
 @Resolver()
 export class AuthResolver {
   constructor(private usersService: UsersService, private authService: AuthService) {}
 
-  @Query(() => User)
+  @Query(() => UserEntity)
   @Authorized()
-  me(@Ctx() ctx: Context): User {
+  me(@Ctx() ctx: Context): UserEntity {
     return ctx.authUser!
   }
 
