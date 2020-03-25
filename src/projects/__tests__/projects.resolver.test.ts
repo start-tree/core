@@ -1,13 +1,23 @@
+import { CreateProjectDto } from './../dtos/create-project.dto'
 import { Express } from 'express'
 import { merge, omit } from 'lodash'
 import Container from 'typedi'
 import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
-import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
+import {
+  closePg,
+  connectPg,
+  fakeProjects,
+  fakeUsers,
+  fakeVacantions,
+  syncPg,
+  fakeCategories,
+} from '../../db'
 import { UsersService } from '../../users'
 import { UpdateVacantionDto } from '../../vacantions'
 import { projectFragment } from '../lib/project.fragment'
 import { ProjectsService } from './../projects.service'
+import { CategoriesService, CreateCategoryDto } from '../../categories'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -15,6 +25,7 @@ describe('ProjectsResolver', () => {
   let usersService: UsersService
   let authService: AuthService
   let projectsService: ProjectsService
+  let categoriesService: CategoriesService
 
   beforeAll(async () => {
     await connectPg()
@@ -23,6 +34,7 @@ describe('ProjectsResolver', () => {
     usersService = Container.get(UsersService)
     authService = Container.get(AuthService)
     projectsService = Container.get(ProjectsService)
+    categoriesService = Container.get(CategoriesService)
   })
 
   beforeEach(async () => {
@@ -34,7 +46,7 @@ describe('ProjectsResolver', () => {
     await closePg()
   })
 
-  test('create project', async () => {
+  test.only('create project', async () => {
     const createProjectMutation = `
       mutation CreateProject($input: CreateProjectInput!) {
         createProject(input: $input) {
@@ -46,8 +58,19 @@ describe('ProjectsResolver', () => {
     const [userData] = fakeUsers
     const user = await usersService.findOne({ email: userData.email })
 
+    const [categoryData1, categoryData2] = fakeCategories
+    const categories = await Promise.all([
+      categoriesService.create(categoryData1),
+      categoriesService.create(categoryData2),
+    ])
+
     const [projectData] = fakeProjects
-    const input = merge(projectData, { vacantions: [fakeVacantions[0], fakeVacantions[1]] })
+
+    const input: Omit<CreateProjectDto, 'ownerId'> = {
+      ...projectData,
+      vacantions: [fakeVacantions[0], fakeVacantions[1]],
+      categoriesIds: [categories[0].id, categories[1].id],
+    }
 
     const token = authService.createToken(user!.id)
     const result = await makeQuery({
@@ -65,13 +88,13 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
       ownerId: user!.id,
-      ...omit(input, ['vacantions']),
+      ...omit(input, ['vacantions', 'categoriesIds']),
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
       },
       vacantions: expect.arrayContaining(
-        input.vacantions.map((v) =>
+        input.vacantions!.map((v) =>
           expect.objectContaining({
             id: expect.any(String),
             projectId: expect.any(Number),
@@ -79,9 +102,10 @@ describe('ProjectsResolver', () => {
           })
         )
       ),
+      categories: expect.arrayContaining(categories.map((c) => ({ ...c, id: c.id.toString() }))),
     })
 
-    expect(result.data.createProject.vacantions).toHaveLength(input.vacantions.length)
+    expect(result.data.createProject.vacantions).toHaveLength(input.vacantions!.length)
   })
 
   test('get project', async () => {

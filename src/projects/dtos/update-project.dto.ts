@@ -1,20 +1,6 @@
 import { Field, InputType } from 'type-graphql'
 import { UpdateVacantionDto, UpdateVacantionInput } from '../../vacantions'
-import { CreateProjectDto, CreateProjectInput } from './create-project.dto'
-
-export class UpdateProjectDto implements CreateProjectDto {
-  id: number
-
-  title: string
-
-  description: string
-
-  ownerId: number
-
-  categoriesIds: number[]
-
-  vacantions?: UpdateVacantionDto[]
-}
+import { CreateProjectDto } from './create-project.dto'
 
 @InputType()
 class UpdateProjectVacantionInput implements Omit<UpdateVacantionInput, 'projectId' | 'id'> {
@@ -31,8 +17,8 @@ class UpdateProjectVacantionInput implements Omit<UpdateVacantionInput, 'project
   projectId?: number
 }
 
-@InputType()
-export class UpdateProjectInput implements CreateProjectInput {
+@InputType('UpdateProjectInput')
+export class UpdateProjectDto implements CreateProjectDto {
   @Field()
   id: number
 
@@ -45,6 +31,8 @@ export class UpdateProjectInput implements CreateProjectInput {
   @Field(() => [Number])
   categoriesIds: number[]
 
-  @Field(() => [UpdateProjectVacantionInput], { nullable: true })
-  vacantions?: UpdateProjectVacantionInput[]
+  @Field(() => [UpdateProjectVacantionInput])
+  vacantions?: UpdateVacantionDto[]
+
+  ownerId: number
 }

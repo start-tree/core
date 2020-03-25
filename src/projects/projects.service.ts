@@ -23,12 +23,12 @@ const makeWhere = ({ ids, ownerId }: FindProjectsDto) => {
 @Service()
 export class ProjectsService {
   constructor(
-    @InjectRepository(ProjectEntity) private projectsRepo: Repository<ProjectEntity>,
+    @InjectRepository(ProjectEntity) private projectsRepository: Repository<ProjectEntity>,
     private vacantionsService: VacantionsService
   ) {}
 
   async create(data: CreateProjectDto) {
-    const { id } = await this.projectsRepo.save(omit(data, ['vacantions']))
+    const { id } = await this.projectsRepository.save(omit(data, ['vacantions']))
 
     const { vacantions } = data
     if (vacantions) {
@@ -37,11 +37,18 @@ export class ProjectsService {
       )
     }
 
+    const { categoriesIds } = data
+    await this.projectsRepository
+      .createQueryBuilder()
+      .relation('categories')
+      .of(id)
+      .add(categoriesIds)
+
     return await this.findOne({ id })
   }
 
   async update(data: UpdateProjectDto) {
-    const { id } = await this.projectsRepo.save(omit(data, ['vacantions']))
+    const { id } = await this.projectsRepository.save(omit(data, ['vacantions']))
 
     const { vacantions } = data
     if (vacantions) {
@@ -52,15 +59,20 @@ export class ProjectsService {
   }
 
   async findOne(where: FindProjectDto) {
-    return this.projectsRepo.findOne(where, { relations: ['owner', 'vacantions'] })
+    return this.projectsRepository.findOne(where, {
+      relations: ['owner', 'vacantions', 'categories'],
+    })
   }
 
   async find(query: FindProjectsDto = {}) {
-    return this.projectsRepo.find({ where: makeWhere(query), relations: ['owner', 'vacantions'] })
+    return this.projectsRepository.find({
+      where: makeWhere(query),
+      relations: ['owner', 'vacantions', 'categories'],
+    })
   }
 
   async delete(query: FindProjectsDto) {
-    const { affected } = await this.projectsRepo.delete(makeWhere(query))
+    const { affected } = await this.projectsRepository.delete(makeWhere(query))
     return { affected: affected! }
   }
 }

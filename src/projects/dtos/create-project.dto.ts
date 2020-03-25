@@ -2,19 +2,6 @@ import { Field, InputType } from 'type-graphql'
 import { CreateVacantionDto, CreateVacantionInput } from '../../vacantions'
 import { ProjectEntity } from '../project.entity'
 
-export class CreateProjectDto
-  implements Omit<ProjectEntity, 'id' | 'owner' | 'vacantions' | 'categories'> {
-  title: string
-
-  description: string
-
-  ownerId: number
-
-  categoriesIds: number[]
-
-  vacantions?: Omit<CreateVacantionDto, 'projectId'>[]
-}
-
 @InputType()
 class CreateProjectVacantionInput implements Omit<CreateVacantionInput, 'projectId'> {
   @Field()
@@ -24,9 +11,9 @@ class CreateProjectVacantionInput implements Omit<CreateVacantionInput, 'project
   description: string
 }
 
-@InputType()
-export class CreateProjectInput
-  implements Omit<ProjectEntity, 'id' | 'ownerId' | 'owner' | 'vacantions' | 'categories'> {
+@InputType('CreateProjectInput')
+export class CreateProjectDto
+  implements Omit<ProjectEntity, 'id' | 'owner' | 'vacantions' | 'categories'> {
   @Field()
   title: string
 
@@ -34,8 +21,10 @@ export class CreateProjectInput
   description: string
 
   @Field(() => [Number])
-  categoriesIds: number[]
+  categoriesIds?: number[]
 
   @Field(() => [CreateProjectVacantionInput], { nullable: true })
-  vacantions?: CreateProjectVacantionInput[]
+  vacantions?: Omit<CreateVacantionDto, 'projectId'>[]
+
+  ownerId: number
 }

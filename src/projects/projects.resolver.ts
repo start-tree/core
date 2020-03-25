@@ -1,7 +1,7 @@
 import { ProjectEntity } from './project.entity'
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context, Delete } from '../app'
-import { CreateProjectInput, FindProjectsArgs, UpdateProjectInput } from './dtos'
+import { FindProjectsArgs, CreateProjectDto, UpdateProjectDto } from './dtos'
 import { ProjectsService } from './projects.service'
 
 @Resolver()
@@ -22,7 +22,7 @@ export class ProjectsResolver {
   @Authorized()
   async createProject(
     @Ctx() ctx: Context,
-    @Arg('input') input: CreateProjectInput
+    @Arg('input') input: CreateProjectDto
   ): Promise<ProjectEntity> {
     const project = await this.projectsService.create({
       ...input,
@@ -35,7 +35,7 @@ export class ProjectsResolver {
   @Authorized()
   async updateProject(
     @Ctx() ctx: Context,
-    @Arg('input') input: UpdateProjectInput
+    @Arg('input') input: UpdateProjectDto
   ): Promise<ProjectEntity | null> {
     const ownerId = ctx.authUser!.id
     const id = Number(input.id)
