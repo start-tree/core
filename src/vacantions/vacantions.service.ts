@@ -9,24 +9,26 @@ import {
 } from './dtos'
 import { VacantionEntity } from './vacantion.entity'
 
+const getVacantionRelationsList = () => ['project']
+
 @Service()
 export class VacantionsService {
   constructor(
-    @InjectRepository(VacantionEntity) private vacantionsRepo: Repository<VacantionEntity>
+    @InjectRepository(VacantionEntity) private vacantionsRepository: Repository<VacantionEntity>
   ) {}
 
   async create(data: CreateVacantionData) {
-    const { id } = await this.vacantionsRepo.save(data)
+    const { id } = await this.vacantionsRepository.save(this.vacantionsRepository.create(data))
     return this.findOne({ id })
   }
 
   async update(data: UpdateVacantionData) {
-    const { id } = await this.vacantionsRepo.save(data)
+    const { id } = await this.vacantionsRepository.save(this.vacantionsRepository.create(data))
     return this.findOne({ id })
   }
 
   async findOne(where: FindVacantionData) {
-    return this.vacantionsRepo.findOne(where, { relations: ['project'] })
+    return this.vacantionsRepository.findOne(where, { relations: getVacantionRelationsList() })
   }
 
   async find({ ids, projectId }: { ids?: number[]; projectId?: number } = {}) {
@@ -40,7 +42,7 @@ export class VacantionsService {
       where.projectId = projectId
     }
 
-    return this.vacantionsRepo.find({ where })
+    return this.vacantionsRepository.find({ where, relations: getVacantionRelationsList() })
   }
 
   async delete({ ids }: FindVacantionsData) {
@@ -50,7 +52,7 @@ export class VacantionsService {
       where.id = In(ids)
     }
 
-    const { affected } = await this.vacantionsRepo.delete(where)
+    const { affected } = await this.vacantionsRepository.delete(where)
     return Boolean(affected)
   }
 

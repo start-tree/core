@@ -3,7 +3,14 @@ import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
-import { CreateProjectData, FindProjectDto, FindProjectsData, UpdateProjectData } from './dtos'
+import {
+  CreateProjectData,
+  FindProjectDto,
+  FindProjectsData,
+  UpdateProjectData,
+  CreateProjectInput,
+  UpdateProjectInput,
+} from './dtos'
 import { ProjectEntity } from './project.entity'
 
 const makeWhere = ({ ids, ownerId }: FindProjectsData) => {
@@ -20,6 +27,12 @@ const makeWhere = ({ ids, ownerId }: FindProjectsData) => {
   return where
 }
 
+export const parseProjectData = (
+  data: CreateProjectData | UpdateProjectData | CreateProjectInput | UpdateProjectInput
+) => omit(data, ['vacantions', 'categoriesIds'])
+
+const getProjectRelationsList = () => ['owner', 'vacantions', 'categories']
+
 @Service()
 export class ProjectsService {
   constructor(
@@ -28,7 +41,9 @@ export class ProjectsService {
   ) {}
 
   async create(data: CreateProjectData) {
-    const { id } = await this.projectsRepository.save(omit(data, ['vacantions', 'categoriesIds']))
+    const { id } = await this.projectsRepository.save(
+      this.projectsRepository.create(parseProjectData(data))
+    )
 
     const { vacantions } = data
     if (vacantions) {
@@ -50,7 +65,9 @@ export class ProjectsService {
   }
 
   async update(data: UpdateProjectData) {
-    const { id } = await this.projectsRepository.save(omit(data, ['vacantions', 'categoriesIds']))
+    const { id } = await this.projectsRepository.save(
+      this.projectsRepository.create(parseProjectData(data))
+    )
 
     const { vacantions } = data
     if (vacantions) {
@@ -80,14 +97,14 @@ export class ProjectsService {
 
   async findOne(where: FindProjectDto) {
     return this.projectsRepository.findOne(where, {
-      relations: ['owner', 'vacantions', 'categories'],
+      relations: getProjectRelationsList(),
     })
   }
 
   async find(query: FindProjectsData = {}) {
     return this.projectsRepository.find({
       where: makeWhere(query),
-      relations: ['owner', 'vacantions', 'categories'],
+      relations: getProjectRelationsList(),
     })
   }
 

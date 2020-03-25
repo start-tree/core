@@ -1,9 +1,9 @@
 import Container from 'typedi'
+import { CategoriesService } from '../../categories'
 import { ProjectsService } from '../../projects'
 import { UsersService } from '../../users'
 import { VacantionsService } from '../../vacantions'
-import { createFakeProjects, createFakeVacantions, fakeUsers, fakeCategories } from '../fake-data'
-import { CategoriesService } from '../../categories'
+import { createFakeProjects, createFakeVacantions, fakeCategories, fakeUsers } from '../fake-data'
 
 export const fakeDb = async () => {
   process.env.NODE_ENV !== 'test' && console.log('Start fake db')

@@ -7,8 +7,8 @@ import { CategoriesService, CategoryEntity } from '../../categories'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { projectFragment } from '../lib/project.fragment'
-import { CreateProjectInput } from './../dtos/create-project.dto'
-import { ProjectsService } from './../projects.service'
+import { CreateProjectInput } from '../dtos/create-project.dto'
+import { ProjectsService, parseProjectData } from '../projects.service'
 import { UpdateProjectInput } from '../dtos'
 
 describe('ProjectsResolver', () => {
@@ -76,7 +76,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
       ownerId: user!.id,
-      ...omit(input, ['vacantions', 'categoriesIds']),
+      ...parseProjectData(input),
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
@@ -189,7 +189,7 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.updateProject).toEqual({
-      ...omit(updatedProjectData, ['vacantions', 'categories']),
+      ...parseProjectData(input),
       id: project!.id.toString(),
       ownerId: user!.id,
       owner: {
