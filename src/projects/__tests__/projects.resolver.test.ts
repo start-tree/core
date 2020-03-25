@@ -6,7 +6,7 @@ import { AuthService } from '../../auth'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { UpdateVacantionDto } from '../../vacantions'
-import { projectFragment } from '../project.fragment'
+import { projectFragment } from '../lib/project.fragment'
 import { ProjectsService } from './../projects.service'
 
 describe('ProjectsResolver', () => {
