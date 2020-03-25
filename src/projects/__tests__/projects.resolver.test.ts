@@ -46,7 +46,7 @@ describe('ProjectsResolver', () => {
     await closePg()
   })
 
-  test.only('create project', async () => {
+  test('create project', async () => {
     const createProjectMutation = `
       mutation CreateProject($input: CreateProjectInput!) {
         createProject(input: $input) {
@@ -108,7 +108,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject.vacantions).toHaveLength(input.vacantions!.length)
   })
 
-  test('get project', async () => {
+  test.only('get project', async () => {
     const projectQuery = `
       query Project($id: Float!) {
         project(id: $id) {
@@ -133,12 +133,13 @@ describe('ProjectsResolver', () => {
 
     expect(result.data.project).toEqual({
       id: project!.id.toString(),
-      ...omit(project, ['id', 'owner', 'vacantions']),
+      ...omit(project, ['id', 'owner', 'vacantions', 'categories']),
       owner: {
         id: project!.owner!.id.toString(),
         ...omit(project!.owner, ['id', 'passwordHash']),
       },
       vacantions: project!.vacantions!.map((v) => ({ ...v, id: v.id.toString() })),
+      categories: project!.categories!.map((c) => ({ ...c, id: c.id.toString() })),
     })
   })
 
