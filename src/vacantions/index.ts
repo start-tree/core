@@ -1,6 +1,5 @@
 export * from './vacantion.entity'
 export * from './vacantion.type'
-export * from './inputs'
 export * from './dtos'
 export * from './vacantions.service'
 export * from './vacantion.fragment'

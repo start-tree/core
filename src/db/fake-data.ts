@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { times } from 'lodash'
-import { CreateUser } from '../users'
+import { CreateUserDto } from '../users'
 import { CreateProjectDto } from './../projects'
 import { CreateVacantionDto } from '../vacantions'
 
@@ -12,7 +12,7 @@ export const authUsers = [
   },
 ]
 
-export const fakeUsers: CreateUser[] = [
+export const fakeUsers: CreateUserDto[] = [
   ...authUsers,
   ...times(10, () => ({
     name: faker.name.findName(),

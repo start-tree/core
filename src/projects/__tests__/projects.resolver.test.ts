@@ -140,7 +140,7 @@ describe('ProjectsResolver', () => {
     })
 
     const updatedProjectData = {
-      id: project!.id.toString(),
+      id: project!.id,
       title: `${project!.title}-updated`,
       description: `${project!.description}-updated`,
     }
@@ -170,8 +170,8 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.updateProject).toEqual({
-      id: project!.id.toString(),
       ...updatedProjectData,
+      id: project!.id.toString(),
       ownerId: user!.id,
       owner: {
         id: user!.id.toString(),
