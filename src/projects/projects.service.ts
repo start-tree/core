@@ -37,8 +37,7 @@ export class ProjectsService {
       )
     }
 
-    const project = await this.findOne({ id })
-    return project!
+    return await this.findOne({ id })
   }
 
   async update(data: UpdateProjectDto) {
@@ -49,8 +48,7 @@ export class ProjectsService {
       await this.vacantionsService.saveForProject(vacantions, id)
     }
 
-    const project = await this.findOne({ id })
-    return project!
+    return await this.findOne({ id })
   }
 
   async findOne(where: FindProjectDto) {

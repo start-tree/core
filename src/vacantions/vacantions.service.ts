@@ -46,7 +46,6 @@ export class VacantionsService {
     }
 
     const { affected } = await this.vacantionsRepo.delete(where)
-
     return Boolean(affected)
   }
 
