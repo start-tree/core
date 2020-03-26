@@ -41,7 +41,7 @@ describe('ProjectsResolver', () => {
     await closePg()
   })
 
-  test('create project', async () => {
+  test('mutation createProject', async () => {
     const createProjectMutation = `
       mutation CreateProject($input: CreateProjectInput!) {
         createProject(input: $input) {
@@ -99,7 +99,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject.categories).toHaveLength(input.categoriesIds!.length)
   })
 
-  test('get project', async () => {
+  test('query project', async () => {
     const projectQuery = `
       query Project($id: Float!) {
         project(id: $id) {
@@ -134,7 +134,7 @@ describe('ProjectsResolver', () => {
     })
   })
 
-  test('update project', async () => {
+  test('mutation updateProject', async () => {
     const updateProjectMutation = `
       mutation UpdateProject($input: UpdateProjectInput!) {
         updateProject(input: $input) {
@@ -219,7 +219,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.updateProject.categories).toHaveLength(input.categoriesIds!.length)
   })
 
-  test('delete project', async () => {
+  test('mutation deleteProject', async () => {
     const deleteProjectMutation = `
       mutation deleteProject($id: Float!) {
         deleteProject(id: $id) {
