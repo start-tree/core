@@ -3,15 +3,9 @@ import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
-import {
-  CreateProjectData,
-  FindProjectDto,
-  FindProjectsData,
-  UpdateProjectData,
-  CreateProjectInput,
-  UpdateProjectInput,
-} from './dtos'
 import { ProjectEntity } from './project.entity'
+import { FindProjectsData, ProjectData, FindProjectData } from './projects.dtos'
+import { ProjectInput } from './projects.inputs'
 
 const makeWhere = ({ ids, ownerId }: FindProjectsData) => {
   const where: FindConditions<ProjectEntity> = {}
@@ -27,9 +21,7 @@ const makeWhere = ({ ids, ownerId }: FindProjectsData) => {
   return where
 }
 
-export const parseProjectData = (
-  data: CreateProjectData | UpdateProjectData | CreateProjectInput | UpdateProjectInput
-) => omit(data, ['vacantions', 'categoriesIds'])
+export const parseProjectInput = (data: ProjectInput) => omit(data, ['vacantions', 'categoriesIds'])
 
 const getProjectRelationsList = () => ['owner', 'vacantions', 'categories']
 
@@ -40,9 +32,9 @@ export class ProjectsService {
     private vacantionsService: VacantionsService
   ) {}
 
-  async create(data: CreateProjectData) {
+  async create(data: ProjectData) {
     const { id } = await this.projectsRepository.save(
-      this.projectsRepository.create(parseProjectData(data))
+      this.projectsRepository.create(parseProjectInput(data))
     )
 
     const { vacantions } = data
@@ -64,9 +56,9 @@ export class ProjectsService {
     return await this.findOne({ id })
   }
 
-  async update(data: UpdateProjectData) {
-    const { id } = await this.projectsRepository.save(
-      this.projectsRepository.create(parseProjectData(data))
+  async updateById(id: number, data: ProjectData) {
+    await this.projectsRepository.save(
+      this.projectsRepository.create({ id, ...parseProjectInput(data) })
     )
 
     const { vacantions } = data
@@ -95,7 +87,7 @@ export class ProjectsService {
     return await this.findOne({ id })
   }
 
-  async findOne(where: FindProjectDto) {
+  async findOne(where: FindProjectData) {
     return this.projectsRepository.findOne(where, {
       relations: getProjectRelationsList(),
     })

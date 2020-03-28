@@ -17,11 +17,11 @@ export class VacantionEntity {
   @Field()
   description: string
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  projectId?: number
+  @Column()
+  @Field()
+  projectId: number
 
-  @ManyToOne(() => ProjectEntity, { nullable: true, onDelete: 'CASCADE' })
-  @Field(() => ProjectEntity, { nullable: true })
-  project?: ProjectEntity
+  @ManyToOne(() => ProjectEntity, { onDelete: 'CASCADE' })
+  @Field(() => ProjectEntity)
+  project: ProjectEntity
 }

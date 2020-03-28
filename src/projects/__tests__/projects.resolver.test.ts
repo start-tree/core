@@ -7,9 +7,8 @@ import { CategoriesService, CategoryEntity } from '../../categories'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
 import { projectFragment } from '../lib/project.fragment'
-import { CreateProjectInput } from '../dtos/create-project.dto'
-import { ProjectsService, parseProjectData } from '../projects.service'
-import { UpdateProjectInput } from '../dtos'
+import { parseProjectInput, ProjectsService } from '../projects.service'
+import { ProjectInput } from '../projects.inputs'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -43,7 +42,7 @@ describe('ProjectsResolver', () => {
 
   test('mutation createProject', async () => {
     const createProjectMutation = `
-      mutation CreateProject($input: CreateProjectInput!) {
+      mutation CreateProject($input: ProjectInput!) {
         createProject(input: $input) {
           ...${projectFragment.name}
         }
@@ -54,7 +53,7 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const input: Omit<CreateProjectInput, 'ownerId'> = {
+    const input: Omit<ProjectInput, 'ownerId'> = {
       ...projectData,
       vacantions: [fakeVacantions[0], fakeVacantions[1]],
       categoriesIds: [categories[0].id, categories[1].id],
@@ -76,7 +75,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.createProject).toEqual({
       id: expect.any(String),
       ownerId: user!.id,
-      ...parseProjectData(input),
+      ...parseProjectInput(input),
       owner: {
         id: user!.id.toString(),
         ...omit(user, ['id', 'passwordHash']),
@@ -136,7 +135,7 @@ describe('ProjectsResolver', () => {
 
   test('mutation updateProject', async () => {
     const updateProjectMutation = `
-      mutation UpdateProject($input: UpdateProjectInput!) {
+      mutation UpdateProject($input: ProjectInput!) {
         updateProject(input: $input) {
           ...${projectFragment.name}
         }
@@ -163,7 +162,7 @@ describe('ProjectsResolver', () => {
       description: `${project!.description}-updated`,
     }
 
-    const input: Omit<UpdateProjectInput, 'ownerId'> = {
+    const input: Omit<ProjectInput, 'ownerId'> = {
       ...updatedProjectData,
       vacantions: [
         {
@@ -189,7 +188,7 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.updateProject).toEqual({
-      ...parseProjectData(input),
+      ...parseProjectInput(input),
       id: project!.id.toString(),
       ownerId: user!.id,
       owner: {

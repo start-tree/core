@@ -1,11 +1,11 @@
 import faker from 'faker'
 import { times } from 'lodash'
-import { CreateCategoryData } from '../categories'
-import { CreateUserData } from '../users'
-import { CreateVacantionData } from '../vacantions'
-import { CreateProjectData } from './../projects/dtos/create-project.dto'
+import { CategoryData } from '../categories'
+import { ProjectData } from '../projects/projects.dtos'
+import { UserData } from '../users'
+import { VacationData } from '../vacantions'
 
-export const authUsers: CreateUserData[] = [
+export const authUsers: UserData[] = [
   {
     name: 'test-user',
     email: 'test@mail.com',
@@ -13,7 +13,7 @@ export const authUsers: CreateUserData[] = [
   },
 ]
 
-export const fakeUsers: CreateUserData[] = [
+export const fakeUsers: UserData[] = [
   ...authUsers,
   ...times(10, () => ({
     name: faker.name.findName(),
@@ -22,17 +22,17 @@ export const fakeUsers: CreateUserData[] = [
   })),
 ]
 
-export const fakeCategories: CreateCategoryData[] = times(10, () => ({
+export const fakeCategories: CategoryData[] = times(10, () => ({
   name: faker.lorem.words(faker.random.number(3)),
 }))
 
-export const fakeProjects: Omit<
-  CreateProjectData,
-  'ownerId' | 'vacantions' | 'categoriesIds'
->[] = times(30, () => ({
-  title: faker.lorem.words(faker.random.number(5)),
-  description: faker.lorem.paragraphs(faker.random.number(5)),
-}))
+export const fakeProjects: Omit<ProjectData, 'ownerId' | 'vacantions' | 'categoriesIds'>[] = times(
+  30,
+  () => ({
+    title: faker.lorem.words(faker.random.number(5)),
+    description: faker.lorem.paragraphs(faker.random.number(5)),
+  })
+)
 
 export const createFakeProjects = ({
   ownerIds,
@@ -40,7 +40,7 @@ export const createFakeProjects = ({
 }: {
   ownerIds: number[]
   categoriesIds: number[]
-}): CreateProjectData[] => {
+}): ProjectData[] => {
   return fakeProjects.map((p) => ({
     ...p,
     ownerId: ownerIds[faker.random.number(ownerIds.length - 1)],
@@ -49,7 +49,7 @@ export const createFakeProjects = ({
   }))
 }
 
-export const fakeVacantions: CreateVacantionData[] = times(30, () => ({
+export const fakeVacantions: VacationData[] = times(30, () => ({
   title: faker.lorem.words(faker.random.number(5)),
   description: faker.lorem.paragraphs(faker.random.number(5)),
 }))

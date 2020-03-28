@@ -1,8 +1,8 @@
 import { Service } from 'typedi'
-import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CategoryEntity } from './category.entity'
 import { Repository } from 'typeorm'
-import { CreateCategoryData } from './dtos'
+import { InjectRepository } from 'typeorm-typedi-extensions'
+import { CategoryData } from './categories.dtos'
+import { CategoryEntity } from './category.entity'
 
 @Service()
 export class CategoriesService {
@@ -10,7 +10,7 @@ export class CategoriesService {
     @InjectRepository(CategoryEntity) private categoryRepository: Repository<CategoryEntity>
   ) {}
 
-  async create(data: CreateCategoryData) {
+  async create(data: CategoryData) {
     const { id } = await this.categoryRepository.save(this.categoryRepository.create(data))
     const category = await this.findOne({ id })
     return category!
