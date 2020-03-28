@@ -37,20 +37,24 @@ export class ProjectsService {
       this.projectsRepository.create(parseProjectInput(data))
     )
 
-    const { vacantions } = data
-    if (vacantions) {
-      await Promise.all(
-        vacantions.map((v) => this.vacantionsService.create({ ...v, projectId: id }))
-      )
+    {
+      const { vacantions } = data
+      if (vacantions?.length) {
+        await Promise.all(
+          vacantions.map((v) => this.vacantionsService.create({ ...v, projectId: id }))
+        )
+      }
     }
 
-    const { categoriesIds } = data
-    if (categoriesIds.length) {
-      await this.projectsRepository
-        .createQueryBuilder()
-        .relation('categories')
-        .of(id)
-        .add(categoriesIds)
+    {
+      const { categoriesIds } = data
+      if (categoriesIds.length) {
+        await this.projectsRepository
+          .createQueryBuilder()
+          .relation('categories')
+          .of(id)
+          .add(categoriesIds)
+      }
     }
 
     return await this.findOne({ id })
@@ -61,13 +65,16 @@ export class ProjectsService {
       this.projectsRepository.create({ id, ...parseProjectInput(data) })
     )
 
-    const { vacantions } = data
-    if (vacantions) {
-      await this.vacantionsService.saveForProject(vacantions, id)
+    {
+      const { vacantions } = data
+      if (vacantions) {
+        await this.vacantionsService.saveForProject(vacantions, id)
+      }
     }
 
-    const { categoriesIds } = data
-    if (categoriesIds.length) {
+    {
+      const { categoriesIds } = data
+
       const project = await this.findOne({ id })
       const projectCategories = project!.categories
 
