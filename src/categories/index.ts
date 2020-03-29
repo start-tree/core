@@ -1,4 +1,4 @@
-export * from './categories.dtos'
+export * from './dto'
 export * from './categories.resolver'
 export * from './categories.service'
 export * from './category.entity'

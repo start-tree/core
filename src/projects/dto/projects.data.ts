@@ -1,4 +1,4 @@
-import { VacationData } from '../vacantions'
+import { VacationData } from '../../vacantions'
 
 export class ProjectData {
   title: string

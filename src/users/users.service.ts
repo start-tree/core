@@ -3,8 +3,8 @@ import { omit } from 'lodash'
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
+import { FindUserData, UserData } from './dto'
 import { UserEntity } from './user.entity'
-import { UserData, FindUserData } from './users.dtos'
 
 @Service()
 export class UsersService {

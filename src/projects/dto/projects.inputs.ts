@@ -1,5 +1,5 @@
 import { InputType, Field } from 'type-graphql'
-import { VacantionInput } from '../vacantions'
+import { VacantionInput } from '../../vacantions'
 
 @InputType()
 export class ProjectInput {

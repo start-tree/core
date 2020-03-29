@@ -1,9 +1,8 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context } from '../app'
-import { UsersService, UserEntity } from '../users'
+import { UserEntity, UsersService } from '../users'
 import { AuthService } from './auth.service'
-import { Auth } from './auth.objects'
-import { RegisterInput, LoginInput } from './auth.inputs'
+import { Auth, LoginInput, RegisterInput } from './dto'
 
 @Resolver()
 export class AuthResolver {

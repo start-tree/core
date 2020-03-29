@@ -1,9 +1,8 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Context, Delete } from '../app'
+import { FindProjectsArgs, ProjectInput } from './dto'
 import { ProjectEntity } from './project.entity'
 import { ProjectsService } from './projects.service'
-import { FindProjectsArgs } from './projects.args'
-import { ProjectInput } from './projects.inputs'
 
 @Resolver()
 export class ProjectsResolver {

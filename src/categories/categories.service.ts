@@ -1,8 +1,8 @@
 import { Service } from 'typedi'
 import { Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { CategoryData } from './categories.dtos'
 import { CategoryEntity } from './category.entity'
+import { CategoryData } from './dto'
 
 @Service()
 export class CategoriesService {

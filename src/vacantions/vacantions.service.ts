@@ -1,8 +1,8 @@
 import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
+import { FindVacantionData, FindVacantionsData, VacationData } from './dto'
 import { VacantionEntity } from './vacantion.entity'
-import { FindVacantionData, VacationData, FindVacantionsData } from './vacantions.dtos'
 
 const getVacantionRelationsList = () => ['project']
 

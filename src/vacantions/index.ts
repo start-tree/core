@@ -1,5 +1,4 @@
+export * from './dto'
 export * from './lib'
 export * from './vacantion.entity'
-export * from './vacantions.dtos'
-export * from './vacantions.inputs'
 export * from './vacantions.service'

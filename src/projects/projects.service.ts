@@ -3,9 +3,8 @@ import { Service } from 'typedi'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { VacantionsService } from '../vacantions'
+import { FindProjectData, FindProjectsData, ProjectData, ProjectInput } from './dto'
 import { ProjectEntity } from './project.entity'
-import { FindProjectsData, ProjectData, FindProjectData } from './projects.dtos'
-import { ProjectInput } from './projects.inputs'
 
 const makeWhere = ({ ids, ownerId }: FindProjectsData) => {
   const where: FindConditions<ProjectEntity> = {}
