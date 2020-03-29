@@ -4,8 +4,6 @@ yarn-error.log
 
 .env
 
-schema.gql
-
 coverage
 
 .DS_Store

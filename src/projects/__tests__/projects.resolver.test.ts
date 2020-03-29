@@ -8,7 +8,7 @@ import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } f
 import { UsersService } from '../../users'
 import { projectFragment } from '../lib/project.fragment'
 import { parseProjectInput, ProjectsService } from '../projects.service'
-import { ProjectInput } from '../dto/projects.inputs'
+import { ProjectInput } from '../dto'
 
 describe('ProjectsResolver', () => {
   let app: Express

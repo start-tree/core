@@ -1,7 +1,7 @@
 import faker from 'faker'
 import { times } from 'lodash'
 import { CategoryData } from '../categories'
-import { ProjectData } from '../projects/dto/projects.data'
+import { ProjectData } from '../projects'
 import { UserData } from '../users'
 import { VacationData } from '../vacantions'
 
