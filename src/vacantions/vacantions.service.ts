@@ -17,8 +17,8 @@ export class VacantionsService {
     return this.findOne({ id })
   }
 
-  async update(data: VacationData) {
-    const { id } = await this.vacantionsRepository.save(this.vacantionsRepository.create(data))
+  async updateById(id: number, data: VacationData) {
+    await this.vacantionsRepository.save(this.vacantionsRepository.create({ id, ...data }))
     return this.findOne({ id })
   }
 
@@ -67,6 +67,6 @@ export class VacantionsService {
     }
 
     const vacantionsToUpdate = data.filter((v) => v.id)
-    await Promise.all(vacantionsToUpdate.map((v) => this.update(v)))
+    await Promise.all(vacantionsToUpdate.map((v) => this.updateById(v.id!, v)))
   }
 }

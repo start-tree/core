@@ -6,9 +6,9 @@ import { AuthService } from '../../auth'
 import { CategoriesService, CategoryEntity } from '../../categories'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
 import { UsersService } from '../../users'
+import { CreateProjectInput, UpdateProjectInput } from '../dto'
 import { projectFragment } from '../lib/project.fragment'
 import { parseProjectInput, ProjectsService } from '../projects.service'
-import { ProjectInput } from '../dto'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -42,7 +42,7 @@ describe('ProjectsResolver', () => {
 
   test('mutation createProject', async () => {
     const createProjectMutation = `
-      mutation CreateProject($input: ProjectInput!) {
+      mutation CreateProject($input: CreateProjectInput!) {
         createProject(input: $input) {
           ...${projectFragment.name}
         }
@@ -53,7 +53,7 @@ describe('ProjectsResolver', () => {
     const user = await usersService.findOne({ email: userData.email })
 
     const [projectData] = fakeProjects
-    const input: Omit<ProjectInput, 'ownerId'> = {
+    const input: Omit<CreateProjectInput, 'ownerId'> = {
       ...projectData,
       vacantions: [fakeVacantions[0], fakeVacantions[1]],
       categoriesIds: [categories[0].id, categories[1].id],
@@ -135,7 +135,7 @@ describe('ProjectsResolver', () => {
 
   test('mutation updateProject', async () => {
     const updateProjectMutation = `
-      mutation UpdateProject($input: ProjectInput!) {
+      mutation UpdateProject($input: UpdateProjectInput!) {
         updateProject(input: $input) {
           ...${projectFragment.name}
         }
@@ -162,7 +162,7 @@ describe('ProjectsResolver', () => {
       description: `${project!.description}-updated`,
     }
 
-    const input: Omit<ProjectInput, 'ownerId'> = {
+    const input: Omit<UpdateProjectInput, 'ownerId'> = {
       ...updatedProjectData,
       vacantions: [
         {

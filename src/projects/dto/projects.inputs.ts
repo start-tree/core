@@ -1,11 +1,8 @@
-import { InputType, Field } from 'type-graphql'
-import { VacantionInput } from '../../vacantions'
+import { Field, InputType } from 'type-graphql'
+import { CreateVacantionInput, UpdateVacantionInput } from '../../vacantions'
 
 @InputType()
-export class ProjectInput {
-  @Field({ nullable: true })
-  id?: number
-
+export class CreateProjectInput {
   @Field()
   title: string
 
@@ -15,6 +12,15 @@ export class ProjectInput {
   @Field(() => [Number])
   categoriesIds: number[]
 
-  @Field(() => [VacantionInput], { nullable: true })
-  vacantions?: VacantionInput[]
+  @Field(() => [CreateVacantionInput], { nullable: true })
+  vacantions?: CreateVacantionInput[]
+}
+
+@InputType()
+export class UpdateProjectInput extends CreateProjectInput {
+  @Field()
+  id: number
+
+  @Field(() => [UpdateVacantionInput], { nullable: true })
+  vacantions?: UpdateVacantionInput[]
 }
