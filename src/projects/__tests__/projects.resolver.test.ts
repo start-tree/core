@@ -5,10 +5,11 @@ import { createApp, makeQuery } from '../../app'
 import { AuthService } from '../../auth'
 import { CategoriesService, CategoryEntity } from '../../categories'
 import { closePg, connectPg, fakeProjects, fakeUsers, fakeVacantions, syncPg } from '../../db'
-import { UsersService } from '../../users'
+import { UsersService, userFragment } from '../../users'
 import { CreateProjectInput, UpdateProjectInput } from '../dto'
 import { projectFragment } from '../lib/project.fragment'
 import { parseProjectInput, ProjectsService } from '../projects.service'
+import { VacantionsService, vacantionFragment } from '../../vacantions'
 
 describe('ProjectsResolver', () => {
   let app: Express
@@ -17,16 +18,20 @@ describe('ProjectsResolver', () => {
   let authService: AuthService
   let projectsService: ProjectsService
   let categoriesService: CategoriesService
+  let vacantionsService: VacantionsService
+
   let categories: CategoryEntity[]
 
   beforeAll(async () => {
     await connectPg()
     await syncPg()
     app = await createApp()
+
     usersService = Container.get(UsersService)
     authService = Container.get(AuthService)
     projectsService = Container.get(ProjectsService)
     categoriesService = Container.get(CategoriesService)
+    vacantionsService = Container.get(VacantionsService)
   })
 
   beforeEach(async () => {
@@ -255,7 +260,7 @@ describe('ProjectsResolver', () => {
     expect(result.data.deleteProject).toEqual({ affected: 1 })
   })
 
-  test('get projects', async () => {
+  test('query projects', async () => {
     const getProjectsQuery = `
      {
        projects {
@@ -274,5 +279,60 @@ describe('ProjectsResolver', () => {
     expect(result.data).toBeDefined()
 
     expect(result.data.projects).toHaveLength(fakeProjects.length)
+  })
+
+  test('addProposal mutation', async () => {
+    const sendProposalQuery = `
+    mutation AddProposal($input: AddProposalInput!) {
+      addProposal(input: $input) {
+        id
+        description
+        vacantionId
+        userId
+        vacantion {
+          ...${vacantionFragment.name}
+        }
+        user {
+          ...${userFragment.name}
+        }
+      }
+    }
+    ${vacantionFragment.fragment}
+    ${userFragment.fragment}
+    `
+
+    const vacantion = await vacantionsService.findOne({})
+    const input = {
+      description: 'I want to be Senior Full Stack Developer',
+      vacantionId: vacantion!.id,
+    }
+
+    const [userData] = fakeUsers
+    const user = await usersService.findOne({ email: userData.email })
+
+    const result = await makeQuery({
+      app,
+      query: sendProposalQuery,
+      variables: {
+        input,
+      },
+      token: authService.createToken(user!.id),
+    })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data).toBeDefined()
+
+    expect(result.data.addProposal).toEqual({
+      id: expect.any(String),
+      description: input.description,
+      vacantionId: vacantion!.id,
+      userId: user!.id,
+      vacantion: expect.objectContaining({
+        id: vacantion!.id.toString(),
+      }),
+      user: expect.objectContaining({
+        id: user!.id.toString(),
+      }),
+    })
   })
 })

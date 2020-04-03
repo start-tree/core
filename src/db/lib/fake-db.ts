@@ -1,9 +1,15 @@
 import Container from 'typedi'
 import { CategoriesService } from '../../categories'
-import { ProjectsService } from '../../projects'
+import { ProjectsService, ProposalsService } from '../../projects'
 import { UsersService } from '../../users'
 import { VacantionsService } from '../../vacantions'
-import { createFakeProjects, createFakeVacantions, fakeCategories, fakeUsers } from '../fake-data'
+import {
+  createFakeProjects,
+  createFakeVacantions,
+  fakeCategories,
+  fakeUsers,
+  createFakeProposals,
+} from '../fake-data'
 
 export const fakeDb = async () => {
   process.env.NODE_ENV !== 'test' && console.log('Start fake db')
@@ -22,7 +28,12 @@ export const fakeDb = async () => {
 
   const vacantionsService = Container.get(VacantionsService)
   const vacantionsData = createFakeVacantions({ projectsIds: projects.map((p) => p!.id) })
-  await Promise.all(vacantionsData.map((v) => vacantionsService.create(v)))
+  const vacantions = await Promise.all(vacantionsData.map((v) => vacantionsService.create(v)))
+  const vacantionsIds = vacantions.map((v) => v!.id)
+
+  const proposalsService = Container.get(ProposalsService)
+  const proposalsData = createFakeProposals({ vacantionsIds, usersIds })
+  await Promise.all(proposalsData.map((p) => proposalsService.create(p)))
 
   process.env.NODE_ENV !== 'test' && console.log('Finish fake db')
 }

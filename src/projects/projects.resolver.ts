@@ -1,12 +1,37 @@
-import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver, Int } from 'type-graphql'
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  Int,
+  InputType,
+  Field,
+} from 'type-graphql'
 import { Context, Delete } from '../app'
 import { CreateProjectInput, FindProjectsArgs, UpdateProjectInput } from './dto'
 import { ProjectEntity } from './project.entity'
 import { ProjectsService } from './projects.service'
+import { ProposalEntity } from './proposal.entity'
+import { ProposalsService } from './proposals.service'
+
+@InputType()
+export class AddProposalInput {
+  @Field()
+  description: string
+
+  @Field(() => Int)
+  vacantionId: number
+}
 
 @Resolver()
 export class ProjectsResolver {
-  constructor(private projectsService: ProjectsService) {}
+  constructor(
+    private projectsService: ProjectsService,
+    private proposalsService: ProposalsService
+  ) {}
 
   @Query(() => ProjectEntity, { nullable: true })
   async project(@Arg('id', () => Int) id: number): Promise<ProjectEntity | undefined> {
@@ -63,6 +88,15 @@ export class ProjectsResolver {
     return this.projectsService.delete({
       ids: [id],
       ownerId: ctx.authUser!.id,
+    })
+  }
+
+  @Mutation(() => ProposalEntity)
+  @Authorized()
+  addProposal(@Ctx() ctx: Context, @Arg('input') input: AddProposalInput) {
+    return this.proposalsService.create({
+      ...input,
+      userId: ctx.authUser!.id,
     })
   }
 }

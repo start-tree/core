@@ -1,13 +1,13 @@
 import faker from 'faker'
-import { times } from 'lodash'
+import { times, uniqWith } from 'lodash'
 import { CategoryData } from '../categories'
-import { ProjectData } from '../projects'
+import { ProjectData, ProposalData } from '../projects'
 import { UserData } from '../users'
 import { VacationData } from '../vacantions'
 
 export const authUsers: UserData[] = [
   {
-    name: 'test-user',
+    name: 'test',
     email: 'test@mail.com',
     password: 'test',
   },
@@ -59,4 +59,25 @@ export const createFakeVacantions = ({ projectsIds }: { projectsIds: number[] })
     ...p,
     projectId: projectsIds[faker.random.number(projectsIds.length - 1)],
   }))
+}
+
+export const fakeProposals: Omit<ProposalData, 'vacantionId' | 'userId'>[] = times(50, () => ({
+  description: faker.lorem.paragraph(faker.random.number(5)),
+}))
+
+export const createFakeProposals = ({
+  vacantionsIds,
+  usersIds,
+}: {
+  vacantionsIds: number[]
+  usersIds: number[]
+}) => {
+  const data = fakeProposals.map((p) => ({
+    ...p,
+    vacantionId: vacantionsIds[faker.random.number(vacantionsIds.length - 1)],
+    userId: usersIds[faker.random.number(usersIds.length - 1)],
+  }))
+
+  //remove dupplications
+  return uniqWith(data, (f, s) => f.userId === s.userId && f.vacantionId === s.vacantionId)
 }
