@@ -12,7 +12,7 @@
     "format": "prettier \"src/**/*\" --write",
     "lint": "eslint --ext .ts src",
     "test": "jest -i",
-    "create-schema": "ts-node src/app/scripts/create-schema.script.ts",
+    "generate-schema": "ts-node src/app/scripts/generate-schema.script.ts",
     "fake-db": "ts-node src/app/scripts/fake-db.script.ts"
   },
   "jest": {
@@ -54,7 +54,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn format && yarn lint && yarn create-schema",
+      "pre-commit": "yarn format && yarn lint && yarn generate-schema",
       "pre-push": "yarn test"
     }
   },

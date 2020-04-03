@@ -16,7 +16,7 @@ type Category {
 input CreateProjectInput {
   title: String!
   description: String!
-  categoriesIds: [Float!]!
+  categoriesIds: [Int!]!
   vacantions: [CreateVacantionInput!]
 }
 
@@ -26,7 +26,7 @@ input CreateVacantionInput {
 }
 
 type Delete {
-  affected: Float
+  affected: Int
 }
 
 input LoginInput {
@@ -39,14 +39,14 @@ type Mutation {
   login(input: LoginInput!): Auth
   createProject(input: CreateProjectInput!): Project!
   updateProject(input: UpdateProjectInput!): Project
-  deleteProject(id: Float!): Delete!
+  deleteProject(id: Int!): Delete!
 }
 
 type Project {
   id: ID!
   title: String!
   description: String!
-  ownerId: Float!
+  ownerId: Int!
   owner: User!
   vacantions: [Vacantion!]!
   categories: [Category!]!
@@ -56,7 +56,7 @@ type Query {
   users: [User!]!
   me: User!
   categories: [Category!]!
-  project(id: Float!): Project
+  project(id: Int!): Project
   projects(ownerId: Int): [Project!]!
 }
 
@@ -69,15 +69,15 @@ input RegisterInput {
 input UpdateProjectInput {
   title: String!
   description: String!
-  categoriesIds: [Float!]!
+  categoriesIds: [Int!]!
   vacantions: [UpdateVacantionInput!]
-  id: Float!
+  id: Int!
 }
 
 input UpdateVacantionInput {
   title: String!
   description: String!
-  id: Float
+  id: Int
 }
 
 type User {
@@ -90,6 +90,6 @@ type Vacantion {
   id: ID!
   title: String!
   description: String!
-  projectId: Float!
+  projectId: Int!
   project: Project!
 }
