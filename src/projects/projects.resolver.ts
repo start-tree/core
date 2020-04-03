@@ -1,4 +1,4 @@
-import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver, Int } from 'type-graphql'
 import { Context, Delete } from '../app'
 import { CreateProjectInput, FindProjectsArgs, UpdateProjectInput } from './dto'
 import { ProjectEntity } from './project.entity'
@@ -9,7 +9,7 @@ export class ProjectsResolver {
   constructor(private projectsService: ProjectsService) {}
 
   @Query(() => ProjectEntity, { nullable: true })
-  async project(@Arg('id') id: number): Promise<ProjectEntity | undefined> {
+  async project(@Arg('id', () => Int) id: number): Promise<ProjectEntity | undefined> {
     return this.projectsService.findOne({ id })
   }
 
@@ -59,7 +59,7 @@ export class ProjectsResolver {
 
   @Mutation(() => Delete)
   @Authorized()
-  async deleteProject(@Ctx() ctx: Context, @Arg('id') id: number): Promise<Delete> {
+  async deleteProject(@Ctx() ctx: Context, @Arg('id', () => Int) id: number): Promise<Delete> {
     return this.projectsService.delete({
       ids: [id],
       ownerId: ctx.authUser!.id,

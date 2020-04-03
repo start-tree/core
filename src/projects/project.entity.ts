@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql'
+import { Field, ID, ObjectType, Int } from 'type-graphql'
 import {
   Column,
   Entity,
@@ -28,7 +28,7 @@ export class ProjectEntity {
   description: string
 
   @Column()
-  @Field()
+  @Field(() => Int)
   ownerId: number
 
   @ManyToOne(() => UserEntity)

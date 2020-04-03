@@ -1,4 +1,4 @@
-import { InputType, Field } from 'type-graphql'
+import { InputType, Field, Int } from 'type-graphql'
 
 @InputType()
 export class CreateVacantionInput {
@@ -11,6 +11,6 @@ export class CreateVacantionInput {
 
 @InputType()
 export class UpdateVacantionInput extends CreateVacantionInput {
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   id?: number
 }

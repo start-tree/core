@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql'
+import { Field, ID, ObjectType, Int } from 'type-graphql'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { ProjectEntity } from '../projects'
 
@@ -18,7 +18,7 @@ export class VacantionEntity {
   description: string
 
   @Column()
-  @Field()
+  @Field(() => Int)
   projectId: number
 
   @ManyToOne(() => ProjectEntity, { onDelete: 'CASCADE' })

@@ -100,7 +100,7 @@ describe('ProjectsResolver', () => {
 
   test('query project', async () => {
     const projectQuery = `
-      query Project($id: Float!) {
+      query Project($id: Int!) {
         project(id: $id) {
           ...${projectFragment.name}
         }
@@ -220,7 +220,7 @@ describe('ProjectsResolver', () => {
 
   test('mutation deleteProject', async () => {
     const deleteProjectMutation = `
-      mutation deleteProject($id: Float!) {
+      mutation deleteProject($id: Int!) {
         deleteProject(id: $id) {
           affected
         }
