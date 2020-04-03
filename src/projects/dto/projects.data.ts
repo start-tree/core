@@ -1,5 +1,9 @@
 import { VacationData } from '../../vacantions'
 
+class ProjectVacantionData extends VacationData {
+  id?: number
+}
+
 export class ProjectData {
   title: string
 
@@ -9,7 +13,7 @@ export class ProjectData {
 
   categoriesIds: number[]
 
-  vacantions?: VacationData[]
+  vacantions?: ProjectVacantionData[]
 }
 
 export class FindProjectsData {

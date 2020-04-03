@@ -42,6 +42,7 @@ export class ProjectsService {
     const { id } = await this.projectsRepository.save(
       this.projectsRepository.create(parseProjectInput(data))
     )
+    this.projectsRepository.create(parseProjectInput(data))
 
     {
       const { vacantions } = data
@@ -74,7 +75,7 @@ export class ProjectsService {
     {
       const { vacantions } = data
       if (vacantions) {
-        await this.vacantionsService.saveForProject(vacantions, id)
+        await this.vacantionsService.setToProject(vacantions, id)
       }
     }
 

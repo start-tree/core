@@ -51,7 +51,7 @@ export class VacantionsService {
     return Boolean(affected)
   }
 
-  async saveForProject(data: VacationData[], projectId: number) {
+  async setToProject(data: Array<VacationData & { id?: number }>, projectId: number) {
     const existedVacantions = await this.find({ projectId })
 
     const vacantionsIdsToDelete = existedVacantions

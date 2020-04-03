@@ -1,6 +1,4 @@
 export class VacationData {
-  id?: number
-
   title: string
 
   description: string
