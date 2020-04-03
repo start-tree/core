@@ -1,6 +1,6 @@
 import { VacationData } from '../../vacantions'
 
-class ProjectVacantionData extends VacationData {
+export class ProjectVacantionData extends VacationData {
   id?: number
 }
 

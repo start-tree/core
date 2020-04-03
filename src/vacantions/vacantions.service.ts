@@ -1,8 +1,10 @@
 import { Service } from 'typedi'
+import { omit } from 'lodash'
 import { FindConditions, In, Repository } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { FindVacantionData, FindVacantionsData, VacationData } from './dto'
 import { VacantionEntity } from './vacantion.entity'
+import { ProjectVacantionData } from '../projects'
 
 const getVacantionRelationsList = () => ['project']
 
@@ -51,7 +53,7 @@ export class VacantionsService {
     return Boolean(affected)
   }
 
-  async setToProject(data: Array<VacationData & { id?: number }>, projectId: number) {
+  async setToProject(data: ProjectVacantionData[], projectId: number) {
     const existedVacantions = await this.find({ projectId })
 
     const vacantionsIdsToDelete = existedVacantions
@@ -67,6 +69,6 @@ export class VacantionsService {
     }
 
     const vacantionsToUpdate = data.filter((v) => v.id)
-    await Promise.all(vacantionsToUpdate.map((v) => this.updateById(v.id!, v)))
+    await Promise.all(vacantionsToUpdate.map((v) => this.updateById(v.id!, omit(v, ['id']))))
   }
 }
