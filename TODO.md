@@ -16,3 +16,7 @@
   - [ ] move tests
 
 - add types to fake data
+
+- make projects resolver -> resolver for vacantions
+- make vacantions resolver -> resolver for proposals
+- split it by public, user, admin

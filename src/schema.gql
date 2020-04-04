@@ -3,6 +3,11 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddProposalInput {
+  description: String!
+  vacantionId: Int!
+}
+
 type Auth {
   token: String!
   user: User!
@@ -40,6 +45,7 @@ type Mutation {
   createProject(input: CreateProjectInput!): Project!
   updateProject(input: UpdateProjectInput!): Project
   deleteProject(id: Int!): Delete!
+  addProposal(input: AddProposalInput!): ProposalEntity!
 }
 
 type Project {
@@ -50,6 +56,15 @@ type Project {
   owner: User!
   vacantions: [Vacantion!]!
   categories: [Category!]!
+}
+
+type ProposalEntity {
+  id: ID!
+  description: String!
+  vacantionId: Int!
+  userId: Int!
+  vacantion: Vacantion!
+  user: User!
 }
 
 type Query {
@@ -92,4 +107,5 @@ type Vacantion {
   description: String!
   projectId: Int!
   project: Project!
+  proposals: [ProposalEntity!]!
 }
